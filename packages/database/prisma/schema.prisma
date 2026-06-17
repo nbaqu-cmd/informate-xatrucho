@@ -1,0 +1,262 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum LawStatus {
+  PENDING
+  SUMMARIZING
+  ANALYZING
+  TRANSCRIBING
+  VIDEO_GENERATING
+  PUBLISHING
+  COMPLETE
+  FAILED
+}
+
+enum VoteType {
+  FOR
+  AGAINST
+  ABSTAIN
+  ABSENT
+}
+
+enum TranscriptType {
+  SESSION
+  INTERVIEW
+}
+
+enum VideoType {
+  TIKTOK_REELS
+  YOUTUBE
+}
+
+enum Platform {
+  TIKTOK
+  INSTAGRAM
+  YOUTUBE
+}
+
+enum PostStatus {
+  PENDING
+  PUBLISHED
+  FAILED
+}
+
+enum AlertType {
+  PATTERN
+  ANOMALY
+  AGENDA
+}
+
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+model Law {
+  id            String    @id @default(cuid())
+  gazetteNumber String
+  gazetteDate   DateTime
+  lawNumber     String    @unique
+  title         String
+  fullText      String    @db.Text
+  sourceUrl     String
+  status        LawStatus @default(PENDING)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  summary              LawSummary?
+  analysis             LawAnalysis?
+  impactAnalysis       ImpactAnalysis?
+  constitutionalReview ConstitutionalReview?
+  videos               GeneratedVideo[]
+  transcripts          Transcript[]
+  appearances          CongressmanAppearance[]
+  socialPosts          SocialPost[]
+  report               Report?
+  votes                Vote[]
+
+  @@index([status])
+  @@index([gazetteDate])
+}
+
+model LawSummary {
+  id           String @id @default(cuid())
+  lawId        String @unique
+  plainSpanish String @db.Text
+  keyPoints    Json
+  createdAt    DateTime @default(now())
+
+  law Law @relation(fields: [lawId], references: [id], onDelete: Cascade)
+}
+
+model LawAnalysis {
+  id        String   @id @default(cuid())
+  lawId     String   @unique
+  causes    String   @db.Text
+  effects   String   @db.Text
+  benefits  String   @db.Text
+  drawbacks String   @db.Text
+  sources   Json
+  createdAt DateTime @default(now())
+
+  law Law @relation(fields: [lawId], references: [id], onDelete: Cascade)
+}
+
+model ImpactAnalysis {
+  id            String   @id @default(cuid())
+  lawId         String   @unique
+  poorImpact    String   @db.Text
+  middleImpact  String   @db.Text
+  wealthyImpact String   @db.Text
+  createdAt     DateTime @default(now())
+
+  law Law @relation(fields: [lawId], references: [id], onDelete: Cascade)
+}
+
+model ConstitutionalReview {
+  id          String   @id @default(cuid())
+  lawId       String   @unique
+  isCompliant Boolean
+  articles    Json
+  findings    String   @db.Text
+  createdAt   DateTime @default(now())
+
+  law Law @relation(fields: [lawId], references: [id], onDelete: Cascade)
+}
+
+model Party {
+  id           String @id @default(cuid())
+  name         String @unique
+  abbreviation String
+  color        String?
+  createdAt    DateTime @default(now())
+
+  congressmen Congressman[]
+  votes       Vote[]
+}
+
+model Congressman {
+  id            String   @id @default(cuid())
+  name          String
+  partyId       String
+  photoUrl      String?
+  faceEmbedding Json?
+  district      String?
+  createdAt     DateTime @default(now())
+
+  party       Party                   @relation(fields: [partyId], references: [id])
+  votes       Vote[]
+  appearances CongressmanAppearance[]
+
+  @@index([partyId])
+}
+
+model Vote {
+  id            String   @id @default(cuid())
+  lawId         String
+  congressmanId String
+  partyId       String
+  vote          VoteType
+  createdAt     DateTime @default(now())
+
+  law        Law         @relation(fields: [lawId], references: [id], onDelete: Cascade)
+  congressman Congressman @relation(fields: [congressmanId], references: [id])
+  party      Party       @relation(fields: [partyId], references: [id])
+
+  @@unique([lawId, congressmanId])
+  @@index([lawId])
+  @@index([partyId])
+}
+
+model Transcript {
+  id        String         @id @default(cuid())
+  lawId     String
+  type      TranscriptType
+  videoUrl  String
+  content   String         @db.Text
+  language  String         @default("es")
+  createdAt DateTime       @default(now())
+
+  law Law @relation(fields: [lawId], references: [id], onDelete: Cascade)
+
+  @@index([lawId])
+}
+
+model CongressmanAppearance {
+  id            String   @id @default(cuid())
+  lawId         String
+  congressmanId String
+  videoUrl      String
+  clipUrl       String?
+  timestamp     Int
+  confidence    Float
+  createdAt     DateTime @default(now())
+
+  law         Law         @relation(fields: [lawId], references: [id], onDelete: Cascade)
+  congressman Congressman @relation(fields: [congressmanId], references: [id])
+
+  @@index([lawId])
+  @@index([congressmanId])
+}
+
+model GeneratedVideo {
+  id        String    @id @default(cuid())
+  lawId     String
+  type      VideoType
+  url       String
+  duration  Int
+  createdAt DateTime  @default(now())
+
+  law Law @relation(fields: [lawId], references: [id], onDelete: Cascade)
+
+  @@index([lawId])
+}
+
+model SocialPost {
+  id          String     @id @default(cuid())
+  lawId       String
+  platform    Platform
+  postId      String?
+  url         String?
+  status      PostStatus @default(PENDING)
+  publishedAt DateTime?
+  createdAt   DateTime   @default(now())
+
+  law Law @relation(fields: [lawId], references: [id], onDelete: Cascade)
+
+  @@index([lawId])
+  @@index([platform])
+}
+
+model Report {
+  id        String   @id @default(cuid())
+  lawId     String   @unique
+  pdfUrl    String?
+  htmlUrl   String?
+  createdAt DateTime @default(now())
+
+  law Law @relation(fields: [lawId], references: [id], onDelete: Cascade)
+}
+
+model PatternAlert {
+  id          String    @id @default(cuid())
+  type        AlertType
+  description String    @db.Text
+  parties     Json
+  lawIds      Json
+  severity    Severity
+  resolved    Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+
+  @@index([severity])
+  @@index([resolved])
+}

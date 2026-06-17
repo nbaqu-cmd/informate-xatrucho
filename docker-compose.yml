@@ -1,0 +1,186 @@
+version: "3.9"
+
+services:
+  # ─── Infrastructure ─────────────────────────────────────────────────────────
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: informate_xatrucho
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── API Server ──────────────────────────────────────────────────────────────
+
+  api:
+    build:
+      context: .
+      dockerfile: ./apps/api/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/informate_xatrucho
+      REDIS_URL: redis://redis:6379
+      NODE_ENV: production
+      PORT: "4000"
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # ─── Next.js Web App ─────────────────────────────────────────────────────────
+
+  web:
+    build:
+      context: .
+      dockerfile: ./apps/web/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://api:4000
+      NODE_ENV: production
+    depends_on:
+      - api
+
+  # ─── Workers ─────────────────────────────────────────────────────────────────
+
+  gazette-watcher:
+    build:
+      context: .
+      dockerfile: ./workers/gazette-watcher/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/informate_xatrucho
+      REDIS_URL: redis://redis:6379
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  congress-watcher:
+    build:
+      context: .
+      dockerfile: ./workers/congress-watcher/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/informate_xatrucho
+      REDIS_URL: redis://redis:6379
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  transcription:
+    build:
+      context: .
+      dockerfile: ./workers/transcription/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/informate_xatrucho
+      REDIS_URL: redis://redis:6379
+      DOWNLOADS_DIR: /tmp/informate-downloads
+    env_file:
+      - .env
+    volumes:
+      - downloads:/tmp/informate-downloads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  face-recognition:
+    build:
+      context: .
+      dockerfile: ./workers/face-recognition/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/informate_xatrucho
+      REDIS_URL: redis://redis:6379
+      DOWNLOADS_DIR: /tmp/informate-downloads
+    env_file:
+      - .env
+    volumes:
+      - downloads:/tmp/informate-downloads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  video-generator:
+    build:
+      context: .
+      dockerfile: ./workers/video-generator/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/informate_xatrucho
+      REDIS_URL: redis://redis:6379
+      VIDEO_OUTPUT_DIR: /tmp/informate-videos
+      DOWNLOADS_DIR: /tmp/informate-downloads
+    env_file:
+      - .env
+    volumes:
+      - downloads:/tmp/informate-downloads
+      - videos:/tmp/informate-videos
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  publisher:
+    build:
+      context: .
+      dockerfile: ./workers/publisher/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/informate_xatrucho
+      REDIS_URL: redis://redis:6379
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  redis_data:
+  downloads:
+  videos:

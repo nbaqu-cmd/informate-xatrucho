@@ -1,0 +1,21 @@
+{
+  "name": "@informate/scraper",
+  "version": "0.1.0",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "playwright": "^1.44.0",
+    "cheerio": "^1.0.0",
+    "pdf-parse": "^1.1.1",
+    "node-fetch": "^3.3.0",
+    "undici": "^6.19.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "@types/node": "^20.0.0",
+    "@types/pdf-parse": "^1.1.4"
+  }
+}

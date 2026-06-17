@@ -1,0 +1,29 @@
+node_modules/
+dist/
+.next/
+.turbo/
+*.env
+.env.local
+.env.production
+
+# Prisma
+packages/database/src/generated/
+
+# Media artifacts
+*.mp4
+*.mp3
+*.wav
+downloads/
+
+# Generated reports
+apps/api/reports/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code session state
+.claude/

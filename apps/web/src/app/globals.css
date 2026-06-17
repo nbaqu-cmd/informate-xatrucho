@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  body {
+    @apply antialiased bg-paper text-ink;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .rule-double {
+    border-top: 3px double theme("colors.ink.DEFAULT");
+  }
+
+  .drop-cap::first-letter {
+    font-family: var(--font-headline);
+    float: left;
+    font-size: 3.8rem;
+    line-height: 0.85;
+    font-weight: 700;
+    padding-right: 0.5rem;
+    padding-top: 0.2rem;
+    color: theme("colors.honduras.red");
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 45s linear infinite;
+  }
+
+  .marquee-track:hover {
+    animation-play-state: paused;
+  }
+}
