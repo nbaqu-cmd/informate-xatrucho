@@ -26,6 +26,8 @@ router.get("/", async (req, res) => {
         gazetteNumber: true,
         status: true,
         createdAt: true,
+        imageUrl: true,
+        imageCredit: true,
         summary: { select: { keyPoints: true, plainSpanish: true } },
         analysis: { select: { causes: true, effects: true, benefits: true, drawbacks: true, sources: true } },
         report: { select: { pdfUrl: true } },

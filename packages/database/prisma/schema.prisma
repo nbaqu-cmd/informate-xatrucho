@@ -73,6 +73,10 @@ model Law {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
+  imageUrl       String?
+  imageCredit    String?
+  imageSourceUrl String?
+
   summary              LawSummary?
   analysis             LawAnalysis?
   impactAnalysis       ImpactAnalysis?

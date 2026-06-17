@@ -1,10 +1,22 @@
+import Image from "next/image";
+
 export function PhotoPlaceholder({
   caption,
   height = 240,
+  src,
 }: {
   caption: string;
   height?: number;
+  src?: string;
 }) {
+  if (src) {
+    return (
+      <div className="relative border border-border overflow-hidden" style={{ height }}>
+        <Image src={src} alt={caption} fill className="object-cover" sizes="(max-width: 768px) 100vw, 760px" />
+      </div>
+    );
+  }
+
   return (
     <div
       className="border border-border flex items-center justify-center"

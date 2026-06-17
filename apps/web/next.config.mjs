@@ -10,6 +10,11 @@ const nextConfig = {
         protocol: "https",
         hostname: "www.congresonacional.hn",
       },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "4000",
+      },
     ],
   },
 };

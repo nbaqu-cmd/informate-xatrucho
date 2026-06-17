@@ -3,6 +3,7 @@ import { formatDate, estimateReadingMinutes } from "../lib/utils";
 import { StatusBadge } from "../components/StatusBadge";
 import { PhotoPlaceholder } from "../components/PhotoPlaceholder";
 import { DataUnavailable } from "../components/DataUnavailable";
+import { CONGRESO_PHOTO } from "../lib/media";
 
 export default async function HomePage() {
   const [lawsResult, congressmenResult, partiesResult, alertsResult] = await Promise.allSettled([
@@ -79,7 +80,11 @@ export default async function HomePage() {
             {rest.slice(4, 10).map((law) => (
               <a key={law.id} href={`/leyes/${law.id}`} className="group block">
                 <div className="mb-4">
-                  <PhotoPlaceholder caption={`Decreto · ${law.lawNumber}`} height={180} />
+                  <PhotoPlaceholder
+                    caption={`Decreto · ${law.lawNumber}`}
+                    height={180}
+                    src={law.imageUrl ?? undefined}
+                  />
                 </div>
                 <div className="flex items-center gap-2 mb-2.5">
                   <StatusBadge status={law.status} size="sm" />
@@ -159,9 +164,14 @@ function FeaturedStory({
       <h1 className="font-serif font-black text-4xl sm:text-5xl leading-[1.03] mb-5 text-balance group-hover:text-honduras-red transition-colors">
         {law.title}
       </h1>
-      <div className="mb-6">
-        <PhotoPlaceholder caption="Fotografía · Pleno del Congreso Nacional" height={320} />
+      <div className="mb-1.5">
+        <PhotoPlaceholder
+          caption={`Fotografía · Decreto ${law.lawNumber}`}
+          height={320}
+          src={law.imageUrl ?? CONGRESO_PHOTO.src}
+        />
       </div>
+      <p className="text-[11px] text-ink-500 mb-6">{law.imageCredit ?? CONGRESO_PHOTO.credit}</p>
       {law.summary?.keyPoints && (
         <p className="font-article text-lg text-ink-700 leading-relaxed drop-cap mb-5 max-w-[62ch]">
           {(law.summary.keyPoints as string[]).slice(0, 2).join(" ")}

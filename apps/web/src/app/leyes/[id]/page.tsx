@@ -5,6 +5,7 @@ import { formatDate, estimateReadingMinutes } from "../../../lib/utils";
 import { notFound } from "next/navigation";
 import { StatusBadge } from "../../../components/StatusBadge";
 import { PhotoPlaceholder } from "../../../components/PhotoPlaceholder";
+import { CONGRESO_PHOTO } from "../../../lib/media";
 import { VotingTable, type VoteRow } from "../../../components/VotingTable";
 import { SITE_URL } from "../../../lib/seo";
 
@@ -153,10 +154,18 @@ export default async function LawDetailPage({ params }: { params: { id: string }
         </div>
 
         <div className="mb-2">
-          <PhotoPlaceholder caption={`Fotografía · Decreto ${law.lawNumber}`} height={360} />
+          <PhotoPlaceholder
+            caption={`Fotografía · Decreto ${law.lawNumber}`}
+            height={360}
+            src={law.imageUrl ?? CONGRESO_PHOTO.src}
+          />
         </div>
         <p className="text-xs text-ink-500 mb-9">
-          Imagen ilustrativa. El análisis completo del texto se encuentra a continuación.
+          Imagen ilustrativa.{" "}
+          {law.imageUrl
+            ? law.imageCredit
+            : `Edificio del Congreso Nacional. ${CONGRESO_PHOTO.credit}.`}{" "}
+          El análisis completo del texto se encuentra a continuación.
         </p>
 
         {/* Videos / social */}

@@ -12,3 +12,6 @@ export type { ConstitutionalReviewResult, ConstitutionalArticle } from "./consti
 
 export { detectPatterns } from "./patterns.js";
 export type { PatternAlertResult, VotingRecord } from "./patterns.js";
+
+export { generateImageSearchQueries, pickRelevantImage } from "./lawImage.js";
+export type { ImageCandidate } from "./lawImage.js";

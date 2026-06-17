@@ -20,6 +20,8 @@ export interface LawListItem {
   gazetteNumber: string;
   status: string;
   createdAt: string;
+  imageUrl?: string | null;
+  imageCredit?: string | null;
   summary?: { keyPoints: string[]; plainSpanish: string };
   analysis?: {
     causes: string;
@@ -39,6 +41,9 @@ export interface LawDetail {
   gazetteNumber: string;
   status: string;
   sourceUrl: string;
+  imageUrl?: string | null;
+  imageCredit?: string | null;
+  imageSourceUrl?: string | null;
   summary?: {
     plainSpanish: string;
     keyPoints: string[];

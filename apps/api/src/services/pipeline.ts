@@ -6,6 +6,7 @@ import {
   reviewConstitutionality,
 } from "@informate/ai";
 import { queues } from "../queues/index.js";
+import { assignLawImage } from "./lawImage.js";
 
 export interface PipelineJobData {
   lawId: string;
@@ -22,6 +23,12 @@ export async function runSummarize(lawId: string): Promise<void> {
     create: { lawId, plainSpanish: result.plainSpanish, keyPoints: result.keyPoints },
     update: { plainSpanish: result.plainSpanish, keyPoints: result.keyPoints },
   });
+
+  try {
+    await assignLawImage(lawId);
+  } catch (err) {
+    console.error(`[pipeline] Image sourcing failed for ${lawId}:`, err instanceof Error ? err.message : err);
+  }
 }
 
 export async function runDeepAnalyze(lawId: string): Promise<void> {
