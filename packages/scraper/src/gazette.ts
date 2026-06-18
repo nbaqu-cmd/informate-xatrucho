@@ -130,39 +130,55 @@ export async function findCongressDecreesInMonth(
 
 const MAX_DECREE_LENGTH = 30_000;
 
+// Case-sensitive on purpose: real section headings in these gazette PDFs are
+// always set in full caps ("SECRETARÍA DE ESTADO...", "PODER EJECUTIVO"), while
+// a decree's own body prose is mixed-case. A case-insensitive match on bare
+// words like "COMISIÓN" or "INSTITUTO" false-positives inside ordinary body
+// text — e.g. "Comisionados" (commissioners) — and truncates a decree mid-
+// sentence; case-sensitivity alone rules that out. (\s+ instead of literal
+// spaces because pdf-parse renders justified PDF text with irregular double
+// spaces between words.)
+const SECTION_BOUNDARY = /\n\s*(DECRETO\s+No\.?\s*[\d-]+|PODER\s+EJECUTIVO|SECRETAR[ÍI]A\s+DE\s+ESTADO|INSTITUTO|COMISI[ÓO]N|MUNICIPALIDAD|Secci[óo]n\s+B|Avisos\s+Legales)[A-Za-zÁÉÍÓÚÑáéíóúñ\s,.]{0,80}\n/;
+
 /**
- * Isolates the actual decree body from a gazette PDF that bundles multiple
- * agencies' publications into one document.
+ * Isolates one decree's body from a gazette PDF that bundles multiple decrees,
+ * agency agreements, and legal notices into one document.
  *
- * The first "PODER LEGISLATIVO" occurrence in these PDFs is usually just the
- * table-of-contents entry (e.g. "PODER LEGISLATIVO / Decreto No. 58-2025 /
- * A.1-8"), not the real text. The enacting clause "EL CONGRESO NACIONAL,"
- * only ever appears in the real decree body, so we anchor on that instead
- * and walk backward to include the "DECRETO No." heading.
+ * Anchoring on the enacting clause "EL CONGRESO NACIONAL," (the previous
+ * approach) breaks whenever a decree's real text reads "EL CONGRESO NACIONAL"
+ * followed directly by "CONSIDERANDO" with no comma — the regex then falls
+ * through to the next match anywhere in the document, which is often a
+ * different decree's closing dateline ("...del Congreso Nacional, a los...
+ * días..."), yielding just a signature block. Anchoring on the specific
+ * "DECRETO No. {decreeNumber}" heading instead is reliable, but that heading
+ * also appears once in the table-of-contents (followed by more TOC entries,
+ * not the body) — so among all matches we pick the one immediately followed
+ * by "CONSIDERANDO" or "DECRETA". Empirically the real heading is always
+ * within ~60 characters of that word (just "Poder Legislativo" + "EL CONGRESO
+ * NACIONAL" in between), while the TOC entry is 200+ characters away (it's
+ * followed by other agencies' TOC listings first) — so a 150-char window
+ * cleanly separates the two without risking a false match on a later citation.
  */
-function extractLegislativeSection(fullText: string): string | null {
-  const congresoMatch = fullText.match(/EL CONGRESO NACIONAL\s*,/i);
-  if (!congresoMatch || congresoMatch.index === undefined) return null;
+function extractLegislativeSection(fullText: string, decreeNumber: string): string | null {
+  const escaped = decreeNumber.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const headingPattern = new RegExp(`DECRETO\\s+No\\.?\\s*${escaped}\\b`, "gi");
 
-  const anchor = congresoMatch.index;
-  const lookbackWindow = fullText.slice(Math.max(0, anchor - 500), anchor);
-  const headingMatch = lookbackWindow.match(/DECRETO\s+No\.?\s*[\d-]+/i);
+  let bodyStart: number | null = null;
+  for (const m of fullText.matchAll(headingPattern)) {
+    if (m.index === undefined) continue;
+    const after = fullText.slice(m.index, m.index + 150);
+    if (/CONSIDERANDO|DECRETA/i.test(after)) {
+      bodyStart = m.index;
+      break;
+    }
+  }
+  if (bodyStart === null) return null;
 
-  const sectionStart = headingMatch?.index !== undefined
-    ? Math.max(0, anchor - 500) + headingMatch.index
-    : anchor;
+  const rest = fullText.slice(bodyStart);
+  const boundaryMatch = rest.slice(1).match(SECTION_BOUNDARY);
+  const sectionEnd = boundaryMatch?.index !== undefined ? boundaryMatch.index + 1 : rest.length;
 
-  const rest = fullText.slice(anchor);
-  const nextHeadingMatch = rest.match(
-    /\n\s*(PODER EJECUTIVO|SECRETAR[ÍI]A DE ESTADO|INSTITUTO|COMISI[ÓO]N|MUNICIPALIDAD|Secci[óo]n B)[A-Za-zÁÉÍÓÚÑáéíóúñ\s,.]{0,80}\n/
-  );
-  const naturalEnd = nextHeadingMatch?.index
-    ? anchor + nextHeadingMatch.index
-    : fullText.length;
-
-  const sectionEnd = Math.min(naturalEnd, sectionStart + MAX_DECREE_LENGTH);
-
-  return fullText.slice(sectionStart, sectionEnd).trim();
+  return rest.slice(0, Math.min(sectionEnd, MAX_DECREE_LENGTH)).trim();
 }
 
 function extractDecreeTitle(decreeText: string): string | null {
@@ -170,7 +186,13 @@ function extractDecreeTitle(decreeText: string): string | null {
     /DECRETO\s+No\.?\s*[\d-]+\s*([\s\S]{0,300}?)(?:CONSIDERANDO|EL CONGRESO NACIONAL)/i
   );
   if (match && match[1]) {
-    const candidate = match[1].replace(/\s+/g, " ").trim();
+    // Strip the issuing-branch label that sits between the heading and the
+    // body in this layout ("DECRETO No. X / Poder Legislativo / EL CONGRESO...")
+    // — it's not a real title and would otherwise pass the length check below.
+    const candidate = match[1]
+      .replace(/\s+/g, " ")
+      .replace(/^(Poder Legislativo|Poder Ejecutivo)\s*/i, "")
+      .trim();
     if (candidate.length > 5 && candidate.length < 200) return candidate;
   }
   return null;
@@ -186,8 +208,12 @@ export async function downloadAndExtractDecree(
   const pdfParse = (await import("pdf-parse")).default;
   const data = await pdfParse(Buffer.from(buffer));
 
-  const decreeText = extractLegislativeSection(data.text);
+  const decreeText = extractLegislativeSection(data.text, candidate.decreeNumber);
   if (!decreeText) return null;
+  // A genuine decree body always contains its enacting verb or at least one
+  // article; if extraction landed on something else (e.g. a signature block),
+  // surfacing that as if it were the law's content would be worse than no law at all.
+  if (!/DECRETA|ART[ÍI]CULO/i.test(decreeText)) return null;
 
   const title = extractDecreeTitle(decreeText) ?? `Decreto No. ${candidate.decreeNumber}`;
 
