@@ -109,11 +109,13 @@ export async function runConstitutionalReview(lawId: string): Promise<void> {
       isCompliant: result.isCompliant,
       articles: result.articles,
       findings: result.findings,
+      plainSummary: result.plainSummary,
     },
     update: {
       isCompliant: result.isCompliant,
       articles: result.articles,
       findings: result.findings,
+      plainSummary: result.plainSummary,
     },
   });
 }

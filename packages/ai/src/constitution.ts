@@ -11,6 +11,8 @@ export interface ConstitutionalReviewResult {
   isCompliant: boolean;
   articles: ConstitutionalArticle[];
   findings: string;
+  /** 1-2 sentence "what this means for you" in plain everyday Honduran Spanish. */
+  plainSummary: string;
 }
 
 // Reference set of key articles of the Honduran Constitution (1982, con reformas).
@@ -109,6 +111,7 @@ Sé riguroso pero MESURADO: no afirmes una inconstitucionalidad como un hecho; d
 Responde ÚNICAMENTE con JSON válido:
 {
   "isCompliant": true|false,   // false SOLO si identificas al menos una tensión seria y concreta con un artículo específico
+  "plainSummary": "1 o 2 frases CORTAS en español hondureño sencillo, como se lo explicarías a un amigo que no estudió derecho. Ve directo al grano: qué hace la ley y por qué le importa a la gente común. Sin números de artículos, sin palabras de abogado. Usa 'usted' o un tono cercano. Ejemplo de tono: 'Esta ley pone todo el dinero del Estado bajo el control de una sola oficina del gobierno. El riesgo es que esa oficina gane demasiado poder y otros poderes, como los jueces, queden a su merced.'",
   "articles": [
     {
       "number": "Art. XX",
@@ -117,8 +120,10 @@ Responde ÚNICAMENTE con JSON válido:
       "verdict": "COMPATIBLE" | "QUESTIONABLE" | "CONTRADICTORY"
     }
   ],
-  "findings": "Análisis prudente. Si hay tensiones, explícalas como puntos a revisar citando el artículo y por qué, sin afirmarlas como conclusión definitiva. Si no las hay, explica por qué la ley parece encuadrar en el marco constitucional. Reconoce los límites de un análisis automatizado basado en una selección de artículos. (mínimo 300 palabras)"
+  "findings": "Análisis a detalle, prudente. Si hay tensiones, explícalas como puntos a revisar citando el artículo y por qué, sin afirmarlas como conclusión definitiva. Si no las hay, explica por qué la ley parece encuadrar en el marco constitucional. Reconoce los límites de un análisis automatizado. Escribe claro, pero aquí sí puedes ser más formal. (mínimo 250 palabras)"
 }
+
+REGLAS DE LENGUAJE para plainSummary (lo más importante): este texto lo lee el pueblo hondureño, muchas personas con poca educación formal y poco tiempo. Debe ser CLARO, CORTO y DIRECTO. Nada de tecnicismos legales, nada de 'principio de legalidad' ni 'separación de poderes' sin explicarlo en palabras simples. Di las cosas con ejemplos concretos y consecuencias reales para la vida de la gente. Si la ley no tiene problemas, dilo con tranquilidad y sencillez (ej. 'Esta ley parece estar en orden con la Constitución; básicamente sirve para [X]').
 
 Identifica al menos 3 artículos constitucionales relevantes. Recuerda: señalas dudas para el debate público, no emites veredictos.`,
       },

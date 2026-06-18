@@ -128,12 +128,13 @@ model ImpactAnalysis {
 }
 
 model ConstitutionalReview {
-  id          String   @id @default(cuid())
-  lawId       String   @unique
-  isCompliant Boolean
-  articles    Json
-  findings    String   @db.Text
-  createdAt   DateTime @default(now())
+  id           String   @id @default(cuid())
+  lawId        String   @unique
+  isCompliant  Boolean
+  articles     Json
+  findings     String   @db.Text
+  plainSummary String?  @db.Text // 1-2 line everyday-Spanish "what this means for you"
+  createdAt    DateTime @default(now())
 
   law Law @relation(fields: [lawId], references: [id], onDelete: Cascade)
 }

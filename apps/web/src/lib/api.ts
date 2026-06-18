@@ -63,6 +63,7 @@ export interface LawDetail {
   constitutionalReview?: {
     isCompliant: boolean;
     findings: string;
+    plainSummary?: string | null;
     articles: Array<{
       number: string;
       title: string;

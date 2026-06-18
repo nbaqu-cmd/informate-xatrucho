@@ -145,8 +145,8 @@ export default async function LawDetailPage({ params }: { params: { id: string }
               <div className="font-bold uppercase tracking-widest text-[12px] mb-1">
                 Revisión constitucional · Posibles tensiones a revisar
               </div>
-              <p className="font-article text-[15px] leading-snug text-white/95 line-clamp-2">
-                {law.constitutionalReview.findings}
+              <p className="font-article text-[15.5px] leading-snug text-white/95 line-clamp-3">
+                {law.constitutionalReview.plainSummary ?? law.constitutionalReview.findings}
               </p>
               <span className="inline-block mt-1.5 text-[12px] font-bold underline underline-offset-2">
                 Ver la revisión completa ↓
@@ -413,9 +413,27 @@ export default async function LawDetailPage({ params }: { params: { id: string }
               </div>
               <span className="text-3xl" aria-hidden="true">{law.constitutionalReview.isCompliant ? "✅" : "⚠️"}</span>
             </div>
-            <p className="font-article text-base leading-relaxed text-[#D8D5CB] mb-5">
-              {law.constitutionalReview.findings}
-            </p>
+
+            {law.constitutionalReview.plainSummary && (
+              <div className="mb-6">
+                <div className="text-[11px] font-bold uppercase tracking-widest text-[#8A8678] mb-2">
+                  En palabras sencillas
+                </div>
+                <p className="font-serif text-[22px] sm:text-[25px] leading-snug text-white">
+                  {law.constitutionalReview.plainSummary}
+                </p>
+              </div>
+            )}
+
+            <details className="group mb-5">
+              <summary className="cursor-pointer list-none text-[12px] font-bold uppercase tracking-widest text-[#8A8678] hover:text-white transition-colors flex items-center gap-2">
+                <span className="group-open:rotate-90 transition-transform">▸</span>
+                El análisis a detalle
+              </summary>
+              <p className="font-article text-[15px] leading-relaxed text-[#D8D5CB] mt-3">
+                {law.constitutionalReview.findings}
+              </p>
+            </details>
             <p className="text-xs leading-relaxed text-[#8A8678] border-t border-white/10 pt-4 mb-5">
               Análisis preliminar automatizado, comparado con una selección de artículos de la
               Constitución. <strong className="text-[#BDBAB0]">No es un dictamen legal.</strong> En
