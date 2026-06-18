@@ -1,22 +1,13 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { api } from "../../lib/api";
 import { DataUnavailable } from "../../components/DataUnavailable";
+import { CongresistasDirectory } from "../../components/CongresistasDirectory";
 
 export const metadata: Metadata = {
   title: "Congresistas",
   description:
     "Directorio de diputados del Congreso Nacional de Honduras con historial de votación nominal verificado.",
 };
-
-function initials(name: string): string {
-  return name
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((w) => w[0]?.toUpperCase())
-    .join("");
-}
 
 export default async function CongresistasPage() {
   let congressmen: Awaited<ReturnType<typeof api.congressmen.list>> = [];
@@ -45,51 +36,7 @@ export default async function CongresistasPage() {
           Sincronizando datos del Congreso Nacional...
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-          {congressmen.map((c) => {
-            const color = c.party.color ?? "#6E6A5E";
-            return (
-              <a key={c.id} href={`/congresistas/${c.id}`} className="group block">
-                <div
-                  className="aspect-square border border-border relative overflow-hidden flex items-center justify-center"
-                  style={{
-                    background: c.photoUrl
-                      ? undefined
-                      : `linear-gradient(150deg, ${color} 0%, #15171C 130%)`,
-                  }}
-                >
-                  {c.photoUrl ? (
-                    <Image
-                      src={c.photoUrl}
-                      alt={c.name}
-                      fill
-                      className="object-cover grayscale group-hover:grayscale-0 transition-all duration-300"
-                    />
-                  ) : (
-                    <span className="font-serif font-black text-4xl text-white/90">
-                      {initials(c.name)}
-                    </span>
-                  )}
-                  <span className="absolute left-0 right-0 bottom-0 h-1" style={{ background: color }} />
-                </div>
-                <div className="mt-3">
-                  <div className="font-bold text-ink leading-tight group-hover:text-honduras-red transition-colors">
-                    {c.name}
-                  </div>
-                  <div className="flex items-center gap-1.5 mt-1 text-xs text-ink-500">
-                    <span className="w-2 h-2" style={{ background: color }} />
-                    {c.party.name}
-                  </div>
-                  <div className="text-[11px] text-ink-500 mt-0.5">{c.district}</div>
-                  <div className="flex gap-3 mt-2.5 pt-2.5 border-t border-border text-[11px] text-ink-500">
-                    <span>{c._count.votes} votos</span>
-                    <span>{c._count.appearances} apariciones</span>
-                  </div>
-                </div>
-              </a>
-            );
-          })}
-        </div>
+        <CongresistasDirectory congressmen={congressmen} />
       )}
     </div>
   );
