@@ -7,6 +7,7 @@ import { StatusBadge } from "../../../components/StatusBadge";
 import { PhotoPlaceholder } from "../../../components/PhotoPlaceholder";
 import { CONGRESO_PHOTO } from "../../../lib/media";
 import { VotingTable, type VoteRow } from "../../../components/VotingTable";
+import { ExpandableText } from "../../../components/ExpandableText";
 import { SITE_URL } from "../../../lib/seo";
 
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
@@ -318,7 +319,7 @@ export default async function LawDetailPage({ params }: { params: { id: string }
               <ul className="space-y-2 mb-9">
                 {law.summary.keyPoints.slice(1).map((point, i) => (
                   <li key={i} className="font-article text-[17px] text-ink-700 leading-relaxed flex gap-3">
-                    <span className="text-honduras-red font-bold">, </span>
+                    <span className="text-honduras-red font-bold">•</span>
                     {point}
                   </li>
                 ))}
@@ -341,45 +342,53 @@ export default async function LawDetailPage({ params }: { params: { id: string }
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {ANALYSIS_SECTIONS.map(({ key, anchor, title, color, text }) => (
-              <div key={key} id={anchor} className={`bg-white border border-border border-l-4 ${color} p-6 scroll-mt-24`}>
+              <div key={key} id={anchor} className={`bg-white border border-border border-l-4 ${color} p-6 scroll-mt-[190px]`}>
                 <div className={`text-[11px] font-bold uppercase tracking-widest ${text} mb-2.5`}>
                   {title}
                 </div>
-                <p className="font-article text-[15.5px] leading-relaxed text-ink-700">
-                  {law.analysis![key]}
-                </p>
+                <ExpandableText
+                  text={law.analysis![key]}
+                  className="font-article text-[15.5px] leading-relaxed text-ink-700"
+                />
               </div>
             ))}
           </div>
           {law.analysis.sources.length > 0 && (
-            <div id="fuentes" className="mt-8 pt-6 border-t border-border scroll-mt-24">
-              <p className="text-xs font-bold uppercase tracking-widest text-ink-500 mb-1">Fuentes verificadas</p>
-              <p className="text-[12px] text-ink-500 mb-3">
-                La primera es el texto oficial del decreto en La Gaceta. Solo listamos enlaces que
-                comprobamos que existen y responden.
-              </p>
-              <ul className="space-y-2">
-                {law.analysis.sources.map((src, i) => (
-                  <li key={i} className="text-sm text-ink-500">
-                    {src.url ? (
-                      <a href={src.url} target="_blank" rel="noopener noreferrer" className="text-honduras-blue hover:underline font-semibold">
-                        {src.title}
-                      </a>
-                    ) : (
-                      <span className="text-ink-700 font-semibold">{src.title}</span>
-                    )}
-                    {", "}{src.description}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <details id="fuentes" className="group mt-8 border border-border scroll-mt-[190px]">
+              <summary className="cursor-pointer list-none flex items-center justify-between gap-3 px-5 py-3.5 hover:bg-paper-200 transition-colors">
+                <span className="text-xs font-bold uppercase tracking-widest text-ink-500">
+                  Ver las {law.analysis.sources.length} fuentes verificadas
+                </span>
+                <span className="text-ink-300 group-open:rotate-90 transition-transform shrink-0">▸</span>
+              </summary>
+              <div className="px-5 pb-5 pt-4 border-t border-border">
+                <p className="text-[12px] text-ink-500 mb-3">
+                  La primera es el texto oficial del decreto en La Gaceta. Solo listamos enlaces que
+                  comprobamos que existen y responden.
+                </p>
+                <ul className="space-y-2">
+                  {law.analysis.sources.map((src, i) => (
+                    <li key={i} className="text-sm text-ink-500">
+                      {src.url ? (
+                        <a href={src.url} target="_blank" rel="noopener noreferrer" className="text-honduras-blue hover:underline font-semibold">
+                          {src.title}
+                        </a>
+                      ) : (
+                        <span className="text-ink-700 font-semibold">{src.title}</span>
+                      )}
+                      {", "}{src.description}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </details>
           )}
         </section>
       )}
 
       {/* Impact by class */}
       {law.impactAnalysis && (
-        <section id="impacto" className="max-w-[880px] mx-auto px-4 sm:px-6 lg:px-8 pt-9 pb-3 scroll-mt-24">
+        <section id="impacto" className="max-w-[880px] mx-auto px-4 sm:px-6 lg:px-8 pt-9 pb-3 scroll-mt-[190px]">
           <h2 className="font-serif font-black text-2xl mb-5">Impacto por clase social</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {[
@@ -389,7 +398,12 @@ export default async function LawDetailPage({ params }: { params: { id: string }
             ].map(({ label, content, border }) => (
               <div key={label} className={`bg-white border border-border border-t-[3px] ${border} p-5`}>
                 <div className="text-[13px] font-bold text-ink mb-3">{label}</div>
-                <p className="font-article text-[14.5px] leading-relaxed text-ink-500">{content}</p>
+                <ExpandableText
+                  text={content}
+                  className="font-article text-[14.5px] leading-relaxed text-ink-500"
+                  clampClass="line-clamp-4"
+                  threshold={200}
+                />
               </div>
             ))}
           </div>
@@ -398,7 +412,7 @@ export default async function LawDetailPage({ params }: { params: { id: string }
 
       {/* Constitutional verdict, dark card */}
       {law.constitutionalReview && (
-        <section id="veredicto-constitucional" className="max-w-[880px] mx-auto px-4 sm:px-6 lg:px-8 pt-9 pb-3 scroll-mt-24">
+        <section id="veredicto-constitucional" className="max-w-[880px] mx-auto px-4 sm:px-6 lg:px-8 pt-9 pb-3 scroll-mt-[190px]">
           <div className="bg-ink text-paper p-8">
             <div className="flex items-center justify-between gap-4 flex-wrap border-b border-white/10 pb-4 mb-4">
               <div>
@@ -462,7 +476,7 @@ export default async function LawDetailPage({ params }: { params: { id: string }
 
       {/* Voting record */}
       {voteRows.length > 0 && (
-        <section id="votacion" className="max-w-[880px] mx-auto px-4 sm:px-6 lg:px-8 pt-9 pb-16 scroll-mt-24">
+        <section id="votacion" className="max-w-[880px] mx-auto px-4 sm:px-6 lg:px-8 pt-9 pb-16 scroll-mt-[190px]">
           <div className="flex items-baseline justify-between flex-wrap gap-2 mb-4">
             <h2 className="font-serif font-black text-2xl">Registro de votación</h2>
             <span className="text-[13px] text-ink-500">
@@ -475,7 +489,7 @@ export default async function LawDetailPage({ params }: { params: { id: string }
 
       {/* Transcripts */}
       {(law.transcripts?.length ?? 0) > 0 && (
-        <section id="transcripciones" className="max-w-[880px] mx-auto px-4 sm:px-6 lg:px-8 pb-16 scroll-mt-24">
+        <section id="transcripciones" className="max-w-[880px] mx-auto px-4 sm:px-6 lg:px-8 pb-16 scroll-mt-[190px]">
           <h2 className="font-serif font-black text-2xl mb-5">Transcripciones</h2>
           <div className="space-y-3">
             {law.transcripts?.map((t, i) => (
@@ -524,7 +538,7 @@ export default async function LawDetailPage({ params }: { params: { id: string }
       <aside className="hidden lg:block lg:order-1 pt-11 pb-16 pl-4 sm:pl-6 lg:pl-8">
         {/* Left rail: only the jump nav, pinned in view as the reader scrolls */}
         {navItems.length > 0 && (
-          <nav aria-label="Secciones del análisis" className="border border-border bg-white lg:sticky lg:top-8">
+          <nav aria-label="Secciones del análisis" className="border border-border bg-white lg:sticky lg:top-[190px]">
             <div className="text-[11px] font-bold uppercase tracking-widest text-ink-500 px-4 py-3 border-b border-border">
               En este análisis
             </div>
