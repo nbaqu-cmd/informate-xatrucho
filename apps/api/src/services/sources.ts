@@ -41,7 +41,7 @@ export async function verifyAndEnrichSources(
 ): Promise<Source[]> {
   const verified: Source[] = [
     {
-      title: `Diario Oficial La Gaceta — texto íntegro del decreto`,
+      title: `Diario Oficial La Gaceta, texto íntegro del decreto`,
       url: gazette.url,
       description:
         "Fuente primaria y oficial: el texto completo del decreto tal como fue publicado por el Estado de Honduras. Es la base de todo este análisis.",

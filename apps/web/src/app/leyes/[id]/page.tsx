@@ -57,7 +57,7 @@ export default async function LawDetailPage({ params }: { params: { id: string }
           ← Archivo
         </a>
         <div className="mt-8">
-          <DataUnavailable message="No se pudo cargar esta ley. El servidor puede estar temporalmente fuera de línea — intenta de nuevo en unos momentos." />
+          <DataUnavailable message="No se pudo cargar esta ley. El servidor puede estar temporalmente fuera de línea, intenta de nuevo en unos momentos." />
         </div>
       </div>
     );
@@ -68,7 +68,7 @@ export default async function LawDetailPage({ params }: { params: { id: string }
     const recent = await api.laws.list({ page: 1 });
     relatedLaws = recent.laws.filter((l) => l.id !== law.id).slice(0, 6);
   } catch {
-    // Sidebar widget is non-essential — fail silently and just omit it.
+    // Sidebar widget is non-essential, fail silently and just omit it.
   }
 
   const explainer = law.videos?.find((v) => v.type === "WEBSITE_EXPLAINER");
@@ -139,7 +139,7 @@ export default async function LawDetailPage({ params }: { params: { id: string }
           href="#veredicto-constitucional"
           className="block bg-honduras-red text-white border-b-4 border-black/20 hover:bg-honduras-red/90 transition-colors"
         >
-          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-start gap-4">
+          <div className="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-start gap-4">
             <span className="text-3xl leading-none shrink-0" aria-hidden="true">⚠️</span>
             <div>
               <div className="font-bold uppercase tracking-widest text-[12px] mb-1">
@@ -156,8 +156,8 @@ export default async function LawDetailPage({ params }: { params: { id: string }
         </a>
       )}
 
-      <div className="max-w-[1400px] mx-auto lg:grid lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-8 lg:items-start">
-      <div className="min-w-0">
+      <div className="max-w-[1180px] mx-auto lg:grid lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-8 lg:items-start">
+      <div className="min-w-0 lg:order-2">
       <div className="max-w-[760px] mx-auto px-4 sm:px-6 lg:px-8 pt-11 pb-2">
         {/* Breadcrumb */}
         <a href="/leyes" className="text-xs uppercase tracking-widest font-bold text-ink-500 hover:text-honduras-red transition-colors">
@@ -256,7 +256,7 @@ export default async function LawDetailPage({ params }: { params: { id: string }
           </>
         )}
 
-        {/* Quick-jump dashboard — horizontal, only on mobile (the desktop one lives sticky in the sidebar) */}
+        {/* Quick-jump dashboard, horizontal, only on mobile (the desktop one lives sticky in the sidebar) */}
         {navItems.length > 0 && (
           <nav aria-label="Secciones del análisis" className="mb-9 lg:hidden">
             <div className="text-xs font-bold uppercase tracking-widest text-ink-500 mb-3">
@@ -318,7 +318,7 @@ export default async function LawDetailPage({ params }: { params: { id: string }
               <ul className="space-y-2 mb-9">
                 {law.summary.keyPoints.slice(1).map((point, i) => (
                   <li key={i} className="font-article text-[17px] text-ink-700 leading-relaxed flex gap-3">
-                    <span className="text-honduras-red font-bold">—</span>
+                    <span className="text-honduras-red font-bold">, </span>
                     {point}
                   </li>
                 ))}
@@ -368,7 +368,7 @@ export default async function LawDetailPage({ params }: { params: { id: string }
                     ) : (
                       <span className="text-ink-700 font-semibold">{src.title}</span>
                     )}
-                    {" — "}{src.description}
+                    {", "}{src.description}
                   </li>
                 ))}
               </ul>
@@ -396,7 +396,7 @@ export default async function LawDetailPage({ params }: { params: { id: string }
         </section>
       )}
 
-      {/* Constitutional verdict — dark card */}
+      {/* Constitutional verdict, dark card */}
       {law.constitutionalReview && (
         <section id="veredicto-constitucional" className="max-w-[880px] mx-auto px-4 sm:px-6 lg:px-8 pt-9 pb-3 scroll-mt-24">
           <div className="bg-ink text-paper p-8">
@@ -449,7 +449,7 @@ export default async function LawDetailPage({ params }: { params: { id: string }
                   <span
                     key={i}
                     className="text-xs font-semibold px-2.5 py-1.5 border border-white/20 rounded-full text-[#BDBAB0]"
-                    title={`${art.title} — ${VERDICT_COLORS[art.verdict] ? art.verdict : ""}`}
+                    title={`${art.title}, ${VERDICT_COLORS[art.verdict] ? art.verdict : ""}`}
                   >
                     {art.number} · {art.title}
                   </span>
@@ -481,7 +481,7 @@ export default async function LawDetailPage({ params }: { params: { id: string }
             {law.transcripts?.map((t, i) => (
               <details key={i} className="border border-border">
                 <summary className="px-6 py-4 cursor-pointer font-bold hover:bg-paper-200 transition-colors">
-                  {t.type === "SESSION" ? "📋 Sesión del Congreso" : "🎤 Entrevista"} —{" "}
+                  {t.type === "SESSION" ? "📋 Sesión del Congreso" : "🎤 Entrevista"}, {" "}
                   <a href={t.videoUrl} target="_blank" rel="noopener noreferrer" className="text-honduras-blue text-sm font-normal">
                     Ver video →
                   </a>
@@ -498,10 +498,10 @@ export default async function LawDetailPage({ params }: { params: { id: string }
       )}
       </div>
 
-      <aside className="hidden lg:block lg:sticky lg:top-8 pt-11 pb-16 pr-4 sm:pr-6 lg:pr-8 space-y-6">
-        {/* Sticky vertical jump nav — follows the reader down the page */}
+      <aside className="hidden lg:block lg:order-1 pt-11 pb-16 pl-4 sm:pl-6 lg:pl-8 space-y-6">
+        {/* Left rail: the jump nav stays pinned in view as the reader scrolls */}
         {navItems.length > 0 && (
-          <nav aria-label="Secciones del análisis" className="border border-border bg-white">
+          <nav aria-label="Secciones del análisis" className="border border-border bg-white lg:sticky lg:top-8">
             <div className="text-[11px] font-bold uppercase tracking-widest text-ink-500 px-4 py-3 border-b border-border">
               En este análisis
             </div>

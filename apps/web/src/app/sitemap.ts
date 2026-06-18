@@ -30,7 +30,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       page++;
     }
   } catch {
-    // API unavailable — fall back to static routes only
+    // API unavailable, fall back to static routes only
   }
 
   return [...staticRoutes, ...lawRoutes];

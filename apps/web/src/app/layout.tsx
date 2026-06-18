@@ -32,8 +32,8 @@ const body = Source_Sans_3({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Infórmate Xatruch — Transparencia Legislativa Honduras",
-    template: "%s — Infórmate Xatruch",
+    default: "Infórmate Xatruch, Transparencia Legislativa Honduras",
+    template: "%s, Infórmate Xatruch",
   },
   description:
     "Análisis automático e imparcial de las leyes hondureñas. Sin sesgos, solo la verdad.",
@@ -57,7 +57,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     const { laws } = await api.laws.list({ page: 1 });
     tickerItems = laws.slice(0, 8).map((l) => ({
       id: l.id,
-      label: `Decreto ${l.lawNumber} — ${l.title}`,
+      label: `Decreto ${l.lawNumber}, ${l.title}`,
     }));
   } catch {
     tickerItems = [];

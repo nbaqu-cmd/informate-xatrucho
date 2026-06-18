@@ -59,7 +59,7 @@ export default async function CongresistaDetailPage({ params }: { params: { id: 
         </div>
       </div>
 
-      {/* Voting record — honest about data availability */}
+      {/* Voting record, honest about data availability */}
       <section className="mb-10">
         <h2 className="font-serif font-black text-2xl mb-4">Historial de votación</h2>
         {c.votes.length > 0 ? (

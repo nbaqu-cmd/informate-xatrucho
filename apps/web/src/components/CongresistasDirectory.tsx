@@ -33,7 +33,7 @@ export function CongresistasDirectory({ congressmen }: { congressmen: Congressma
       const haystack = normalize(
         `${c.name} ${c.party.name} ${c.party.abbreviation} ${c.district ?? ""}`
       );
-      // Every typed word must appear somewhere — lets you combine name + party.
+      // Every typed word must appear somewhere, lets you combine name + party.
       return terms.every((t) => haystack.includes(t));
     });
   }, [query, congressmen]);

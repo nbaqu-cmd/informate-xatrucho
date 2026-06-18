@@ -56,7 +56,7 @@ Devuelve JSON válido EXACTO:
   "category": "una de: SEGURIDAD, FINANZAS, ELECCIONES, SALUD, INFRAESTRUCTURA, EDUCACION, JUSTICIA, GOBERNANZA, DERECHOS, OTRO"
 }
 
-Reglas: el topicLabel debe describir el contenido real, neutral, sin adjetivos de opinión. Escoge la categoría más cercana. Responde SOLO con el JSON.`,
+Reglas: el topicLabel debe describir el contenido real, neutral, sin adjetivos de opinión, y NO uses el guión largo (—) ni guiones como puntuación. Escoge la categoría más cercana. Responde SOLO con el JSON.`,
       },
     ],
   });

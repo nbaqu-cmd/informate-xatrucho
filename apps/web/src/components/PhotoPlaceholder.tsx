@@ -9,7 +9,7 @@ export function PhotoPlaceholder({
   caption: string;
   height?: number;
   src?: string;
-  /** Render a true 16:9 box instead of a fixed height — use for the generated
+  /** Render a true 16:9 box instead of a fixed height, use for the generated
    *  covers (which are 16:9) so the full design shows without cropping. */
   aspectVideo?: boolean;
 }) {

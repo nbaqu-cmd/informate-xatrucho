@@ -39,6 +39,8 @@ ${fullText}
 
 Analiza desde múltiples ángulos: histórico, económico, social, político y jurídico.
 
+REGLA DE ESTILO: no uses NUNCA el guión largo (—) ni guiones como signo de puntuación; usa comas, puntos, dos puntos o paréntesis.
+
 Responde ÚNICAMENTE con JSON válido:
 {
   "causes": "¿Por qué se creó esta ley? ¿Cuál era el problema que se buscaba resolver? ¿Qué presiones políticas, económicas o sociales la originaron? (mínimo 300 palabras)",

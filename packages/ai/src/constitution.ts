@@ -108,6 +108,8 @@ ${CONSTITUTION_REFERENCE}
 
 Sé riguroso pero MESURADO: no afirmes una inconstitucionalidad como un hecho; descríbela como una posible tensión a revisar. Si no hay tensiones aparentes, dilo con claridad.
 
+REGLA DE ESTILO: no uses NUNCA el guión largo (—) ni guiones como signo de puntuación; usa comas, puntos, dos puntos o paréntesis.
+
 Responde ÚNICAMENTE con JSON válido:
 {
   "isCompliant": true|false,   // false SOLO si identificas al menos una tensión seria y concreta con un artículo específico

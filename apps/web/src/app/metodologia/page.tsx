@@ -66,7 +66,7 @@ export default function MetodologiaPage() {
           La fuente principal siempre es el texto oficial de La Gaceta. Las referencias adicionales
           que cita el análisis se comprueban automáticamente: solo mostramos y contamos los enlaces
           que realmente existen y responden. Si un enlace no resuelve, lo descartamos en lugar de
-          presentarlo como respaldo. “Verificado” significa que la fuente existe y es accesible —{" "}
+          presentarlo como respaldo. “Verificado” significa que la fuente existe y es accesible, {" "}
           <strong>no</strong> que un humano haya auditado que respalde cada afirmación.
         </p>
       </Section>
@@ -87,8 +87,7 @@ export default function MetodologiaPage() {
           <li>
             <strong>Voto nominal por diputado.</strong> El Congreso Nacional no publica oficialmente
             cómo votó cada diputado en cada decreto. Mientras no exista una fuente oficial y
-            verificable, no mostramos historiales de votación individuales ni patrones de bancada —
-            preferimos un vacío honesto a un dato inventado.
+            verificable, no mostramos historiales de votación individuales ni patrones de bancada, preferimos un vacío honesto a un dato inventado.
           </li>
           <li>
             <strong>Revisión humana caso por caso.</strong> Hoy el proceso es automatizado. No hay
@@ -103,8 +102,8 @@ export default function MetodologiaPage() {
 
       <Section title="Correcciones">
         <p>
-          Si encuentras un error —un dato equivocado, una fuente caída, una interpretación
-          injusta— queremos corregirlo. Reportarlo es parte de cómo este proyecto mejora. Las
+          Si encuentras un error, un dato equivocado, una fuente caída, una interpretación
+          injusta, queremos corregirlo. Reportarlo es parte de cómo este proyecto mejora. Las
           correcciones se aplican sobre el análisis afectado y se vuelven a generar a partir del
           texto oficial.
         </p>

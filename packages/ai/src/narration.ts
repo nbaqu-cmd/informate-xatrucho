@@ -55,7 +55,7 @@ export async function generateNarrationScript(input: NarrationInput): Promise<Na
     messages: [
       {
         role: "user",
-        content: `Eres el guionista de un noticiero hondureño de transparencia legislativa, "Infórmate Xatruch". Escribe el guión hablado de un video explicativo profesional sobre una ley, dirigido a ciudadanos comunes. El tono es serio, claro, confiable y sin sesgo político — solo los hechos y su análisis.
+        content: `Eres el guionista de un noticiero hondureño de transparencia legislativa, "Infórmate Xatruch". Escribe el guión hablado de un video explicativo profesional sobre una ley, dirigido a ciudadanos comunes. El tono es serio, claro, confiable y sin sesgo político, solo los hechos y su análisis.
 
 LEY: Decreto ${input.lawNumber} — ${input.title}
 
@@ -78,6 +78,8 @@ REVISIÓN CONSTITUCIONAL: ${input.constitutionalFindings}
 INSTRUCCIÓN CONSTITUCIONAL CLAVE: ${constitutionalGuidance}
 
 Escribe el guión en español hondureño natural, como se hablaría en voz alta (frases completas, fluidas, sin viñetas ni abreviaturas, sin emojis, sin leer URLs). Cada sección de narración debe durar entre 12 y 25 segundos al hablarse.
+
+REGLA DE ESTILO: no uses NUNCA el guión largo (—) ni guiones como signo de puntuación; usa comas, puntos, dos puntos o paréntesis.
 
 Responde ÚNICAMENTE con JSON válido en esta forma exacta:
 {

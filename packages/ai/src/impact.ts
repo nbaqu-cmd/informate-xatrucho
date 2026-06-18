@@ -35,6 +35,8 @@ Contexto hondureño a considerar:
 - La economía informal es muy grande
 - Muchos hondureños dependen de remesas
 
+REGLA DE ESTILO: no uses NUNCA el guión largo (—) ni guiones como signo de puntuación; usa comas, puntos, dos puntos o paréntesis.
+
 Responde ÚNICAMENTE con JSON válido:
 {
   "poorImpact": "Impacto en la población pobre (trabajadores informales, campesinos, personas sin acceso a servicios básicos). Usa ejemplos concretos y cotidianos. ¿Los afecta positiva o negativamente? ¿Por qué? (mínimo 250 palabras)",

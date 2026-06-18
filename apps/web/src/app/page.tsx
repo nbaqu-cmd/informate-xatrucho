@@ -57,7 +57,7 @@ export default async function HomePage() {
           ].map(({ value, label, border }) => (
             <div key={label} className={`border-l-[3px] ${border} pl-4`}>
               <div className="font-serif font-black text-4xl sm:text-5xl leading-none">
-                {value === null ? "—" : value.toLocaleString("es-HN")}
+                {value === null ? ", " : value.toLocaleString("es-HN")}
               </div>
               <div className="text-xs uppercase tracking-wide text-[#A8A498] font-semibold mt-1.5">
                 {label}
@@ -118,7 +118,7 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
               { num: "01", title: "Detección", desc: "Revisamos La Gaceta, el Diario Oficial, y extraemos el texto íntegro de cada decreto del Congreso Nacional desde el PDF oficial." },
-              { num: "02", title: "Análisis con IA", desc: "Claude analiza causas, efectos, impacto por clase social y una revisión constitucional preliminar — sin línea editorial." },
+              { num: "02", title: "Análisis con IA", desc: "Claude analiza causas, efectos, impacto por clase social y una revisión constitucional preliminar, sin línea editorial." },
               { num: "03", title: "Fuentes", desc: "Enlazamos el documento oficial y comprobamos que cada fuente citada exista; descartamos los enlaces que no resuelven." },
               { num: "04", title: "Publicación", desc: "Generamos una portada y un video explicativo narrado, y compilamos un reporte completo y trazable." },
             ].map(({ num, title, desc }) => (

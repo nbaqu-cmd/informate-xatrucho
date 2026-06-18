@@ -17,6 +17,8 @@ export async function summarizeLaw(fullText: string): Promise<LawSummaryResult> 
 LEY:
 ${fullText}
 
+REGLA DE ESTILO: no uses NUNCA el guión largo (—) ni guiones como signo de puntuación; usa comas, puntos, dos puntos o paréntesis.
+
 Responde ÚNICAMENTE con un JSON válido con esta estructura:
 {
   "plainSpanish": "Resumen completo en español sencillo (3-5 párrafos)",
