@@ -108,21 +108,34 @@ export async function findCongressDecreesInMonth(
 
     const slug = titleAttr.replace(/\s*-\s*/, "-"); // "20260109 - 37039" -> "20260109-37039"
 
-    const descriptionHtml = $el.find(".edocman-description-details").html() ?? "";
-    const match = descriptionHtml.match(
-      /PODER LEGISLATIVO<\/strong>\s*<br\s*\/?>\s*Decreto No\.?\s*([\d-]+)/i
+    // The issue summary lists its sections; isolate the legislative block. A
+    // single issue can carry several decrees, listed either as "Decreto No. X"
+    // or, crucially, as "Decretos Nos. X, Y, Z" (plural) — the old singular-only
+    // match skipped every multi-decree issue, losing most of the laws.
+    const descText = $el.find(".edocman-description-details").text().replace(/\s+/g, " ");
+    const legIdx = descText.search(/PODER LEGISLATIVO/i);
+    if (legIdx === -1) return;
+
+    const afterLeg = descText.slice(legIdx + "PODER LEGISLATIVO".length);
+    const nextSection = afterLeg.search(
+      /SECRETAR[ÍI]A|PODER EJECUTIVO|PODER JUDICIAL|COMISI[ÓO]N|INSTITUTO|MUNICIPALIDAD|TRIBUNAL|BANCO CENTRAL|EMPRESA NACIONAL|AVISOS LEGALES|CONGRESO NACIONAL DE/i
     );
-    if (!match || !match[1]) return;
+    const legBlock = nextSection === -1 ? afterLeg : afterLeg.slice(0, nextSection);
+
+    // Every "<n>-<year>" in the legislative block is a Congress decree.
+    const decreeNumbers = [...new Set([...legBlock.matchAll(/(\d+-20\d\d)/g)].map((m) => m[1]))];
+    if (decreeNumbers.length === 0) return;
 
     const { date, gazetteNumber } = parseSlugDate(slug);
-
-    candidates.push({
-      gazetteNumber,
-      gazetteDate: date,
-      decreeNumber: match[1],
-      slug,
-      downloadUrl: `${ENAG_BASE}/index.php/gaceta-digital/${slug}/download`,
-    });
+    for (const decreeNumber of decreeNumbers) {
+      candidates.push({
+        gazetteNumber,
+        gazetteDate: date,
+        decreeNumber,
+        slug,
+        downloadUrl: `${ENAG_BASE}/index.php/gaceta-digital/${slug}/download`,
+      });
+    }
   });
 
   return candidates;
