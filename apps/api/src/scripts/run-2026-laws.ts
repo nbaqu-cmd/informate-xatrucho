@@ -6,6 +6,7 @@ import {
   runDeepAnalyze,
   runImpactAnalyze,
   runConstitutionalReview,
+  runGenerateCover,
   runGenerateExplainer,
 } from "../services/pipeline.js";
 import { compileLawReport } from "../services/report.js";
@@ -61,6 +62,9 @@ async function main() {
 
       console.log("[batch] Constitutional review...");
       await runConstitutionalReview(law.id);
+
+      console.log("[batch] Generating cover...");
+      await runGenerateCover(law.id);
 
       console.log("[batch] Compiling report...");
       await compileLawReport(law.id);

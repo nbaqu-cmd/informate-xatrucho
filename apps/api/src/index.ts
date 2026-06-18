@@ -18,6 +18,7 @@ import {
   runDeepAnalyze,
   runImpactAnalyze,
   runConstitutionalReview,
+  runGenerateCover,
   kickoffLawPipeline,
   checkAndFinalizelaw,
 } from "./services/pipeline.js";
@@ -126,6 +127,7 @@ new Worker(
   async (job) => {
     const { lawId } = job.data as { lawId: string };
     await runConstitutionalReview(lawId);
+    await runGenerateCover(lawId);
     await checkAndFinalizelaw(lawId);
   },
   { connection }

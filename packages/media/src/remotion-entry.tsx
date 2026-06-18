@@ -3,8 +3,17 @@ import { Composition, registerRoot } from "remotion";
 import { TikTokVideo, type TikTokVideoProps } from "./templates/TikTokVideo";
 import { YouTubeVideo, type YouTubeVideoProps } from "./templates/YouTubeVideo";
 import { WebExplainer, type WebExplainerProps } from "./templates/WebExplainer";
+import { LawCover, type LawCoverProps } from "./templates/LawCover";
 
 const EXPLAINER_FPS = 30;
+
+const defaultCoverProps: LawCoverProps = {
+  lawNumber: "001-2026",
+  topicLabel: "Tema de ejemplo de la ley",
+  category: "OTRO",
+  gazetteDate: "17 de junio de 2026",
+  isConstitutional: true,
+};
 
 const TIKTOK_FPS = 30;
 const YOUTUBE_FPS = 30;
@@ -91,6 +100,15 @@ export const RemotionRoot: React.FC = () => {
           width: 1920,
           height: 1080,
         })}
+      />
+      <Composition
+        id="LawCover"
+        component={LawCover}
+        durationInFrames={1}
+        fps={1}
+        width={1200}
+        height={675}
+        defaultProps={defaultCoverProps}
       />
     </>
   );

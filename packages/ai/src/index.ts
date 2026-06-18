@@ -18,3 +18,6 @@ export type { ImageCandidate, ImageQueryPlan } from "./lawImage.js";
 
 export { generateNarrationScript } from "./narration.js";
 export type { NarrationScript, NarrationSection, NarrationInput } from "./narration.js";
+
+export { generateCoverMeta, CATEGORY_LABELS } from "./cover.js";
+export type { CoverMeta, LawCategory } from "./cover.js";

@@ -2,10 +2,17 @@ import { bundle } from "@remotion/bundler";
 import { renderMedia, selectComposition } from "@remotion/renderer";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
-import { mkdtempSync, mkdirSync } from "fs";
+import { mkdtempSync, mkdirSync, writeFileSync } from "fs";
 import { tmpdir } from "os";
 import { synthesizeSpeech, activeTtsProvider } from "./tts.js";
 import type { WebExplainerProps, ExplainerSegment } from "./templates/WebExplainer.js";
+
+/** A verified illustrative image to weave into the video. */
+export interface ExplainerImage {
+  buffer: Buffer;
+  ext: string;
+  credit: string;
+}
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUTPUT_DIR = process.env["VIDEO_OUTPUT_DIR"] ?? join(tmpdir(), "informate-videos");
@@ -43,10 +50,24 @@ function framesFor(durationSeconds: number): number {
  */
 export async function renderExplainerVideo(
   script: ExplainerScriptInput,
+  images: ExplainerImage[],
   outputName: string
 ): Promise<RenderedExplainer> {
   const provider = activeTtsProvider();
   const audioDir = mkdtempSync(join(tmpdir(), "informate-audio-"));
+
+  // Write verified images into the publicDir so staticFile() resolves them.
+  const imageFiles = images.map((img, i) => {
+    const file = `img-${i}.${img.ext}`;
+    writeFileSync(join(audioDir, file), img.buffer);
+    return { file, credit: img.credit };
+  });
+  // The intro and each neutral section take the next image in turn; the
+  // constitutional ALERT section keeps its strong red text card (no photo),
+  // and once images run out the remaining sections fall back to text cards.
+  let imgCursor = 0;
+  const nextImage = () => (imgCursor < imageFiles.length ? imageFiles[imgCursor++] : undefined);
+  const introImage = nextImage();
 
   // Synthesize intro, each section, and outro to mp3 + measure real durations.
   const intro = await synthesizeSegment(script.intro, "intro", audioDir);
@@ -55,12 +76,15 @@ export async function renderExplainerVideo(
   for (let i = 0; i < script.sections.length; i++) {
     const s = script.sections[i]!;
     const audio = await synthesizeSegment(s.narration, `section-${i}`, audioDir);
+    const img = s.tone === "alert" ? undefined : nextImage();
     sections.push({
       heading: s.heading,
       onScreen: s.onScreen,
       tone: s.tone,
       audioFile: audio.file,
       durationInFrames: framesFor(audio.durationSeconds),
+      imageFile: img?.file,
+      imageCredit: img?.credit,
     });
   }
 
@@ -76,7 +100,13 @@ export async function renderExplainerVideo(
     lawNumber: script.lawNumber,
     gazetteDate: script.gazetteDate,
     isConstitutional: script.isConstitutional,
-    intro: { onScreen: script.intro, audioFile: intro.file, durationInFrames: framesFor(intro.durationSeconds) },
+    intro: {
+      onScreen: script.intro,
+      audioFile: intro.file,
+      durationInFrames: framesFor(intro.durationSeconds),
+      imageFile: introImage?.file,
+      imageCredit: introImage?.credit,
+    },
     sections,
     outro: { onScreen: script.outro, audioFile: outro.file, durationInFrames: framesFor(outro.durationSeconds) },
     totalFrames,

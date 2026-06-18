@@ -6,7 +6,7 @@ import {
   reviewConstitutionality,
 } from "@informate/ai";
 import { queues } from "../queues/index.js";
-import { assignLawImage } from "./lawImage.js";
+import { assignLawCover } from "./lawCover.js";
 import { generateExplainer } from "./explainer.js";
 
 export interface PipelineJobData {
@@ -24,11 +24,18 @@ export async function runSummarize(lawId: string): Promise<void> {
     create: { lawId, plainSpanish: result.plainSpanish, keyPoints: result.keyPoints },
     update: { plainSpanish: result.plainSpanish, keyPoints: result.keyPoints },
   });
+}
 
+/**
+ * Generates the law's designed cover graphic (decree number, topic, category,
+ * constitutional verdict). Runs after the constitutional review so the cover
+ * can show the unconstitutionality alert when warranted. Never fails the law.
+ */
+export async function runGenerateCover(lawId: string): Promise<void> {
   try {
-    await assignLawImage(lawId);
+    await assignLawCover(lawId);
   } catch (err) {
-    console.error(`[pipeline] Image sourcing failed for ${lawId}:`, err instanceof Error ? err.message : err);
+    console.error(`[pipeline] Cover generation failed for ${lawId}:`, err instanceof Error ? err.message : err);
   }
 }
 

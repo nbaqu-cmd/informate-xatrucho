@@ -195,6 +195,35 @@ export async function sourceLawImages(
   return ranked.slice(0, maxCount).map((i) => candidates[i]!);
 }
 
+/**
+ * Sources up to `maxCount` verified images for a law and downloads each into a
+ * buffer with its required attribution — for weaving illustrative photos into
+ * the explainer video. Returns only images that downloaded successfully.
+ */
+export async function sourceLawImageBuffers(
+  title: string,
+  summaryText: string,
+  maxCount: number
+): Promise<Array<{ buffer: Buffer; ext: string; credit: string }>> {
+  const sourced = await sourceLawImages(title, summaryText, maxCount);
+  const out: Array<{ buffer: Buffer; ext: string; credit: string }> = [];
+  for (const img of sourced) {
+    try {
+      const res = await fetch(img.downloadUrl, {
+        headers: { "User-Agent": "InformateXatrucho/1.0 (news transparency)" },
+      });
+      if (!res.ok) continue;
+      const buffer = Buffer.from(await res.arrayBuffer());
+      const extFromUrl = img.downloadUrl.split(".").pop()?.split("?")[0]?.toLowerCase() ?? "jpg";
+      const ext = extFromUrl in CONTENT_TYPE_BY_EXT ? extFromUrl : "jpg";
+      out.push({ buffer, ext, credit: img.credit });
+    } catch {
+      // skip images that fail to download
+    }
+  }
+  return out;
+}
+
 async function storeImage(buffer: Buffer, lawId: string, ext: string, contentType: string): Promise<string> {
   if (HAS_AWS) {
     const { uploadBuffer } = await import("@informate/media");

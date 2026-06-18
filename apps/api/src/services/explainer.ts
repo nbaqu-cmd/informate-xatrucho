@@ -58,8 +58,10 @@ export async function generateExplainer(lawId: string): Promise<void> {
     outro: script.outro,
   };
 
+  // The explainer uses clean, generated typographic cards — consistent with
+  // the law's designed cover, and never a looked-up photo that could mislead.
   console.log(`[explainer] Rendering video for Decreto ${law.lawNumber}...`);
-  const rendered = await renderExplainerVideo(renderInput, lawId);
+  const rendered = await renderExplainerVideo(renderInput, [], lawId);
 
   const { readFile } = await import("fs/promises");
   const videoBuffer = await readFile(rendered.path);

@@ -212,8 +212,8 @@ export default async function LawDetailPage({ params }: { params: { id: string }
               </span>
               <span className="text-border">·</span>
               <span>
-                Generado por IA a partir del texto oficial del decreto y la Constitución de Honduras.
-                {law.imageCredit ? ` Imagen de portada — ${law.imageCredit}.` : ""}
+                Narración y análisis generados por IA a partir del texto oficial del decreto y la
+                Constitución de Honduras.
               </span>
             </figcaption>
           </figure>
@@ -221,15 +221,14 @@ export default async function LawDetailPage({ params }: { params: { id: string }
           <>
             <div className="mb-2">
               <PhotoPlaceholder
-                caption={`Fotografía · Decreto ${law.lawNumber}`}
+                caption={`Portada · Decreto ${law.lawNumber}`}
                 height={360}
                 src={law.imageUrl ?? CONGRESO_PHOTO.src}
               />
             </div>
             <p className="text-xs text-ink-500 mb-9">
-              Imagen ilustrativa.{" "}
               {law.imageUrl
-                ? law.imageCredit
+                ? "Portada generada automáticamente a partir de los datos del decreto; no es una fotografía."
                 : `Edificio del Congreso Nacional. ${CONGRESO_PHOTO.credit}.`}{" "}
               El análisis completo del texto se encuentra a continuación.
             </p>
