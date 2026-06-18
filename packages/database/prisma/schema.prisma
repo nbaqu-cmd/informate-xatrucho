@@ -34,6 +34,7 @@ enum TranscriptType {
 enum VideoType {
   TIKTOK_REELS
   YOUTUBE
+  WEBSITE_EXPLAINER
 }
 
 enum Platform {
@@ -218,6 +219,7 @@ model GeneratedVideo {
   type      VideoType
   url       String
   duration  Int
+  script    String?   @db.Text
   createdAt DateTime  @default(now())
 
   law Law @relation(fields: [lawId], references: [id], onDelete: Cascade)

@@ -70,7 +70,7 @@ export interface LawDetail {
       verdict: string;
     }>;
   };
-  videos?: Array<{ type: string; url: string; duration: number }>;
+  videos?: Array<{ type: string; url: string; duration: number; script?: string | null }>;
   transcripts?: Array<{ type: string; videoUrl: string; content: string }>;
   socialPosts?: Array<{ platform: string; url?: string; status: string }>;
   report?: { pdfUrl?: string };

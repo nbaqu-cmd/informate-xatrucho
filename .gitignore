@@ -18,6 +18,7 @@ downloads/
 # Generated reports
 apps/api/reports/
 apps/api/law-images/
+apps/api/law-videos/
 
 # Logs
 *.log

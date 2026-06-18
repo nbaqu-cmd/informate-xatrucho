@@ -6,6 +6,7 @@ import {
   runDeepAnalyze,
   runImpactAnalyze,
   runConstitutionalReview,
+  runGenerateExplainer,
 } from "../services/pipeline.js";
 import { compileLawReport } from "../services/report.js";
 
@@ -63,6 +64,9 @@ async function main() {
 
       console.log("[batch] Compiling report...");
       await compileLawReport(law.id);
+
+      console.log("[batch] Generating explainer video...");
+      await runGenerateExplainer(law.id);
 
       await db.law.update({ where: { id: law.id }, data: { status: "COMPLETE" } });
 

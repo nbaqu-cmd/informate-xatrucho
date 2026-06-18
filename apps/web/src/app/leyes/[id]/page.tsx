@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { api, ApiError } from "../../../lib/api";
+import { api, ApiError, type LawListItem } from "../../../lib/api";
 import { DataUnavailable } from "../../../components/DataUnavailable";
 import { formatDate, estimateReadingMinutes } from "../../../lib/utils";
 import { notFound } from "next/navigation";
@@ -63,6 +63,16 @@ export default async function LawDetailPage({ params }: { params: { id: string }
     );
   }
 
+  let relatedLaws: LawListItem[] = [];
+  try {
+    const recent = await api.laws.list({ page: 1 });
+    relatedLaws = recent.laws.filter((l) => l.id !== law.id).slice(0, 6);
+  } catch {
+    // Sidebar widget is non-essential — fail silently and just omit it.
+  }
+
+  const explainer = law.videos?.find((v) => v.type === "WEBSITE_EXPLAINER");
+
   const voteCounts = { FOR: 0, AGAINST: 0, ABSTAIN: 0, ABSENT: 0 };
   law.votes?.forEach((v) => {
     voteCounts[v.vote as keyof typeof voteCounts]++;
@@ -102,6 +112,31 @@ export default async function LawDetailPage({ params }: { params: { id: string }
   return (
     <article>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
+      {law.constitutionalReview && !law.constitutionalReview.isCompliant && (
+        <a
+          href="#veredicto-constitucional"
+          className="block bg-honduras-red text-white border-b-4 border-black/20 hover:bg-honduras-red/90 transition-colors"
+        >
+          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-start gap-4">
+            <span className="text-3xl leading-none shrink-0" aria-hidden="true">⚠️</span>
+            <div>
+              <div className="font-bold uppercase tracking-widest text-[12px] mb-1">
+                Alerta · Posible inconstitucionalidad
+              </div>
+              <p className="font-article text-[15px] leading-snug text-white/95 line-clamp-2">
+                {law.constitutionalReview.findings}
+              </p>
+              <span className="inline-block mt-1.5 text-[12px] font-bold underline underline-offset-2">
+                Ver veredicto completo ↓
+              </span>
+            </div>
+          </div>
+        </a>
+      )}
+
+      <div className="max-w-[1400px] mx-auto lg:grid lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-8 lg:items-start">
+      <div className="min-w-0">
       <div className="max-w-[760px] mx-auto px-4 sm:px-6 lg:px-8 pt-11 pb-2">
         {/* Breadcrumb */}
         <a href="/leyes" className="text-xs uppercase tracking-widest font-bold text-ink-500 hover:text-honduras-red transition-colors">
@@ -153,38 +188,54 @@ export default async function LawDetailPage({ params }: { params: { id: string }
           )}
         </div>
 
-        <div className="mb-2">
-          <PhotoPlaceholder
-            caption={`Fotografía · Decreto ${law.lawNumber}`}
-            height={360}
-            src={law.imageUrl ?? CONGRESO_PHOTO.src}
-          />
-        </div>
-        <p className="text-xs text-ink-500 mb-9">
-          Imagen ilustrativa.{" "}
-          {law.imageUrl
-            ? law.imageCredit
-            : `Edificio del Congreso Nacional. ${CONGRESO_PHOTO.credit}.`}{" "}
-          El análisis completo del texto se encuentra a continuación.
-        </p>
-
-        {/* Videos / social */}
-        {(law.videos?.length ?? 0) > 0 && (
-          <div className="flex flex-wrap gap-3 mb-6">
-            {law.videos?.map((video) => (
-              <a
-                key={video.url}
-                href={video.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border border-border hover:border-honduras-red transition-colors px-4 py-2.5 text-sm font-bold flex items-center gap-2"
+        {explainer ? (
+          <figure className="mb-9">
+            <div className="border border-border bg-ink overflow-hidden">
+              <video
+                controls
+                playsInline
+                preload="metadata"
+                poster={law.imageUrl ?? CONGRESO_PHOTO.src}
+                className="w-full aspect-video bg-ink"
               >
-                {video.type === "TIKTOK_REELS" ? "🎵 TikTok / Reels (9:16)" : "▶️ YouTube (16:9)"}
-                <span className="text-ink-500 font-normal">{Math.round(video.duration / 60)}min</span>
-              </a>
-            ))}
-          </div>
+                <source src={explainer.url} type="video/mp4" />
+                Tu navegador no puede reproducir este video.
+              </video>
+            </div>
+            <figcaption className="text-xs text-ink-500 mt-2 flex items-center gap-2 flex-wrap">
+              <span className="inline-flex items-center gap-1.5 font-bold text-honduras-red uppercase tracking-wide">
+                <span aria-hidden="true">▶</span> Video explicativo narrado
+              </span>
+              <span className="text-border">·</span>
+              <span>
+                {Math.floor(explainer.duration / 60)}:{String(explainer.duration % 60).padStart(2, "0")} min
+              </span>
+              <span className="text-border">·</span>
+              <span>
+                Generado por IA a partir del texto oficial del decreto y la Constitución de Honduras.
+                {law.imageCredit ? ` Imagen de portada — ${law.imageCredit}.` : ""}
+              </span>
+            </figcaption>
+          </figure>
+        ) : (
+          <>
+            <div className="mb-2">
+              <PhotoPlaceholder
+                caption={`Fotografía · Decreto ${law.lawNumber}`}
+                height={360}
+                src={law.imageUrl ?? CONGRESO_PHOTO.src}
+              />
+            </div>
+            <p className="text-xs text-ink-500 mb-9">
+              Imagen ilustrativa.{" "}
+              {law.imageUrl
+                ? law.imageCredit
+                : `Edificio del Congreso Nacional. ${CONGRESO_PHOTO.credit}.`}{" "}
+              El análisis completo del texto se encuentra a continuación.
+            </p>
+          </>
         )}
+
         {(law.socialPosts?.length ?? 0) > 0 && (
           <div className="flex gap-2 mb-9 flex-wrap items-center">
             <span className="text-xs uppercase tracking-wide font-bold text-ink-500">Publicado en:</span>
@@ -294,7 +345,7 @@ export default async function LawDetailPage({ params }: { params: { id: string }
 
       {/* Constitutional verdict — dark card */}
       {law.constitutionalReview && (
-        <section className="max-w-[880px] mx-auto px-4 sm:px-6 lg:px-8 pt-9 pb-3">
+        <section id="veredicto-constitucional" className="max-w-[880px] mx-auto px-4 sm:px-6 lg:px-8 pt-9 pb-3 scroll-mt-8">
           <div className="bg-ink text-paper p-8">
             <div className="flex items-center justify-between gap-4 flex-wrap border-b border-white/10 pb-4 mb-4">
               <div>
@@ -363,6 +414,98 @@ export default async function LawDetailPage({ params }: { params: { id: string }
           </div>
         </section>
       )}
+      </div>
+
+      <aside className="hidden lg:block lg:sticky lg:top-8 pt-11 pb-16 pr-4 sm:pr-6 lg:pr-8 space-y-8">
+        <div className="border border-border">
+          <h3 className="font-serif font-black text-base border-b border-border px-5 py-3">
+            Ficha rápida
+          </h3>
+          <dl className="px-5 py-4 space-y-3 text-sm">
+            <div className="flex items-center justify-between gap-3">
+              <dt className="text-ink-500">Estado</dt>
+              <dd><StatusBadge status={law.status} size="sm" /></dd>
+            </div>
+            <div className="flex items-center justify-between gap-3">
+              <dt className="text-ink-500">Decreto</dt>
+              <dd className="font-semibold text-ink">{law.lawNumber}</dd>
+            </div>
+            <div className="flex items-center justify-between gap-3">
+              <dt className="text-ink-500">Publicado</dt>
+              <dd className="font-semibold text-ink">{formatDate(law.gazetteDate)}</dd>
+            </div>
+            <div className="flex items-center justify-between gap-3">
+              <dt className="text-ink-500">Lectura</dt>
+              <dd className="font-semibold text-ink">{readingMinutes} min</dd>
+            </div>
+            {sourceCount > 0 && (
+              <div className="flex items-center justify-between gap-3">
+                <dt className="text-ink-500">Fuentes</dt>
+                <dd className="font-semibold text-honduras-blue">{sourceCount}</dd>
+              </div>
+            )}
+            {law.constitutionalReview && (
+              <div className="flex items-center justify-between gap-3">
+                <dt className="text-ink-500">Constitucionalidad</dt>
+                <dd className={`font-semibold ${law.constitutionalReview.isCompliant ? "text-accent-green" : "text-accent-amber"}`}>
+                  {law.constitutionalReview.isCompliant ? "Conforme" : "En duda"}
+                </dd>
+              </div>
+            )}
+            {voteRows.length > 0 && (
+              <div className="pt-3 border-t border-border">
+                <dt className="text-ink-500 mb-1.5">Votación</dt>
+                <dd className="flex items-center gap-2.5 text-xs font-semibold">
+                  <span className="text-accent-green">{voteCounts.FOR} a favor</span>
+                  <span className="text-honduras-red">{voteCounts.AGAINST} en contra</span>
+                  <span className="text-ink-500">{voteCounts.ABSTAIN} absts.</span>
+                </dd>
+              </div>
+            )}
+          </dl>
+          {law.report?.pdfUrl && (
+            <a
+              href={law.report.pdfUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-center border-t border-border px-5 py-3 text-xs font-bold uppercase tracking-wide text-honduras-red hover:bg-paper-200 transition-colors"
+            >
+              📄 Descargar PDF completo
+            </a>
+          )}
+        </div>
+
+        {relatedLaws.length > 0 && (
+          <div>
+            <h3 className="font-serif font-bold text-xl border-b-2 border-ink pb-2 mb-1">
+              Más decretos recientes
+            </h3>
+            {relatedLaws.map((rl) => (
+              <a
+                key={rl.id}
+                href={`/leyes/${rl.id}`}
+                className="group block py-4 border-b border-border last:border-0"
+              >
+                <div className="flex items-center gap-2 mb-1.5">
+                  <StatusBadge status={rl.status} size="sm" />
+                  <span className="text-[11px] text-ink-500">{formatDate(rl.gazetteDate)}</span>
+                </div>
+                <h4 className="font-serif font-bold text-[15px] leading-snug group-hover:text-honduras-red transition-colors text-balance">
+                  {rl.title}
+                </h4>
+                <div className="text-xs text-ink-500 font-medium mt-1.5">Decreto {rl.lawNumber}</div>
+              </a>
+            ))}
+            <a
+              href="/leyes"
+              className="block pt-3 text-honduras-red font-bold text-xs uppercase tracking-wide hover:underline"
+            >
+              Ver archivo completo →
+            </a>
+          </div>
+        )}
+      </aside>
+      </div>
     </article>
   );
 }

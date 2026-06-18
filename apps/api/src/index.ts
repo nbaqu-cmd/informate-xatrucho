@@ -38,6 +38,9 @@ app.use("/reports", express.static(REPORTS_DIR));
 const LAW_IMAGES_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "law-images");
 app.use("/law-images", express.static(LAW_IMAGES_DIR));
 
+const LAW_VIDEOS_DIR = join(dirname(fileURLToPath(import.meta.url)), "..", "law-videos");
+app.use("/law-videos", express.static(LAW_VIDEOS_DIR));
+
 // Bull Board UI at /admin/queues
 const serverAdapter = new ExpressAdapter();
 serverAdapter.setBasePath("/admin/queues");

@@ -7,14 +7,20 @@ export interface TranscriptionResult {
   duration: number;
 }
 
-const openai = new OpenAI({ apiKey: process.env["OPENAI_API_KEY"] });
+// Lazily instantiated so merely importing this module (e.g. via the package
+// barrel) doesn't require OPENAI_API_KEY — only calling transcribeAudio does.
+let openaiClient: OpenAI | null = null;
+function getOpenAI(): OpenAI {
+  if (!openaiClient) openaiClient = new OpenAI({ apiKey: process.env["OPENAI_API_KEY"] });
+  return openaiClient;
+}
 
 export async function transcribeAudio(
   audioFilePath: string
 ): Promise<TranscriptionResult> {
   const fileStream = createReadStream(audioFilePath);
 
-  const transcription = await openai.audio.transcriptions.create({
+  const transcription = await getOpenAI().audio.transcriptions.create({
     file: fileStream,
     model: "whisper-1",
     language: "es",

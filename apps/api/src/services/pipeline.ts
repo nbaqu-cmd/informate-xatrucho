@@ -7,6 +7,7 @@ import {
 } from "@informate/ai";
 import { queues } from "../queues/index.js";
 import { assignLawImage } from "./lawImage.js";
+import { generateExplainer } from "./explainer.js";
 
 export interface PipelineJobData {
   lawId: string;
@@ -100,6 +101,20 @@ export async function runConstitutionalReview(lawId: string): Promise<void> {
       findings: result.findings,
     },
   });
+}
+
+/**
+ * Generates the narrated website explainer video. Runs after all analysis
+ * (summary, deep analysis, impact, constitutional review) is complete, since
+ * the script and the constitutional-alert section depend on them. Failures
+ * here never fail the law — the written analysis still stands on its own.
+ */
+export async function runGenerateExplainer(lawId: string): Promise<void> {
+  try {
+    await generateExplainer(lawId);
+  } catch (err) {
+    console.error(`[pipeline] Explainer video failed for ${lawId}:`, err instanceof Error ? err.message : err);
+  }
 }
 
 export async function kickoffLawPipeline(lawId: string): Promise<void> {

@@ -18,3 +18,9 @@ export type { FaceMatch } from "./faceRecognition.js";
 export { uploadFile, uploadBuffer } from "./storage.js";
 
 export { renderTikTokVideo, renderYouTubeVideo } from "./videoRenderer.js";
+
+export { renderExplainerVideo } from "./explainerRenderer.js";
+export type { ExplainerScriptInput, RenderedExplainer } from "./explainerRenderer.js";
+
+export { synthesizeSpeech, activeTtsProvider } from "./tts.js";
+export type { SynthesizedSpeech } from "./tts.js";

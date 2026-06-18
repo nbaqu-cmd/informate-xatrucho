@@ -15,3 +15,6 @@ export type { PatternAlertResult, VotingRecord } from "./patterns.js";
 
 export { generateImageSearchQueries, pickRelevantImage } from "./lawImage.js";
 export type { ImageCandidate } from "./lawImage.js";
+
+export { generateNarrationScript } from "./narration.js";
+export type { NarrationScript, NarrationSection, NarrationInput } from "./narration.js";

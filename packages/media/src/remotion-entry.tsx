@@ -1,7 +1,10 @@
 import React from "react";
-import { Composition } from "remotion";
-import { TikTokVideo, type TikTokVideoProps } from "./templates/TikTokVideo.js";
-import { YouTubeVideo, type YouTubeVideoProps } from "./templates/YouTubeVideo.js";
+import { Composition, registerRoot } from "remotion";
+import { TikTokVideo, type TikTokVideoProps } from "./templates/TikTokVideo";
+import { YouTubeVideo, type YouTubeVideoProps } from "./templates/YouTubeVideo";
+import { WebExplainer, type WebExplainerProps } from "./templates/WebExplainer";
+
+const EXPLAINER_FPS = 30;
 
 const TIKTOK_FPS = 30;
 const YOUTUBE_FPS = 30;
@@ -21,6 +24,19 @@ const defaultTikTokProps: TikTokVideoProps = {
   wealthyImpact: "Impacto en clase alta",
   isConstitutional: true,
   gazetteDate: "16/06/2026",
+};
+
+const defaultExplainerProps: WebExplainerProps = {
+  lawTitle: "Decreto de Ejemplo",
+  lawNumber: "001-2026",
+  gazetteDate: "17 de junio de 2026",
+  isConstitutional: true,
+  intro: { onScreen: "Resumen de ejemplo.", audioFile: "", durationInFrames: 90 },
+  sections: [
+    { heading: "¿Qué es?", onScreen: "Ejemplo", tone: "neutral", audioFile: "", durationInFrames: 90 },
+  ],
+  outro: { onScreen: "Cierre de ejemplo.", audioFile: "", durationInFrames: 90 },
+  totalFrames: 270,
 };
 
 const defaultYouTubeProps: YouTubeVideoProps = {
@@ -61,6 +77,23 @@ export const RemotionRoot: React.FC = () => {
         height={1080}
         defaultProps={defaultYouTubeProps}
       />
+      <Composition
+        id="WebExplainer"
+        component={WebExplainer}
+        durationInFrames={defaultExplainerProps.totalFrames}
+        fps={EXPLAINER_FPS}
+        width={1920}
+        height={1080}
+        defaultProps={defaultExplainerProps}
+        calculateMetadata={({ props }) => ({
+          durationInFrames: props.totalFrames,
+          fps: EXPLAINER_FPS,
+          width: 1920,
+          height: 1080,
+        })}
+      />
     </>
   );
 };
+
+registerRoot(RemotionRoot);
