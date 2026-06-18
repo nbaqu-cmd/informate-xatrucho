@@ -115,7 +115,7 @@ function BrandMark({ light = false }: { light?: boolean }) {
           textShadow: light ? "0 1px 6px rgba(0,0,0,0.6)" : "none",
         }}
       >
-        Infórmate <span style={{ fontStyle: "italic" }}>Xatrucho</span>
+        Infórmate <span style={{ fontStyle: "italic" }}>Xatruch</span>
       </span>
     </div>
   );
@@ -302,7 +302,7 @@ function OutroCard({ onScreen }: { onScreen: string }) {
           <span style={{ width: 14, height: 14, background: COLORS.blue }} />
         </div>
         <h2 style={{ fontFamily: "Georgia, serif", color: COLORS.paper, fontSize: 72, fontWeight: 800, margin: "0 0 28px" }}>
-          Infórmate <span style={{ fontStyle: "italic" }}>Xatrucho</span>
+          Infórmate <span style={{ fontStyle: "italic" }}>Xatruch</span>
         </h2>
         <p style={{ fontFamily: "Georgia, serif", color: "#C9C4B6", fontSize: 38, lineHeight: 1.5, margin: 0 }}>
           {onScreen}

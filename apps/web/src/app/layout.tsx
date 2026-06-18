@@ -32,21 +32,21 @@ const body = Source_Sans_3({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Infórmate Xatrucho — Transparencia Legislativa Honduras",
-    template: "%s — Infórmate Xatrucho",
+    default: "Infórmate Xatruch — Transparencia Legislativa Honduras",
+    template: "%s — Infórmate Xatruch",
   },
   description:
     "Análisis automático e imparcial de las leyes hondureñas. Sin sesgos, solo la verdad.",
   openGraph: {
-    siteName: "Infórmate Xatrucho",
-    title: "Infórmate Xatrucho",
+    siteName: "Infórmate Xatruch",
+    title: "Infórmate Xatruch",
     description: "Transparencia legislativa para el pueblo hondureño",
     locale: "es_HN",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Infórmate Xatrucho",
+    title: "Infórmate Xatruch",
     description: "Transparencia legislativa para el pueblo hondureño",
   },
 };
@@ -71,7 +71,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   });
 
   return (
-    <html lang="es" className={`${headline.variable} ${article.variable} ${body.variable}`}>
+    <html lang="es" className={`${headline.variable} ${article.variable} ${body.variable} scroll-smooth`}>
       <body className="bg-paper text-ink min-h-screen font-sans">
         <a
           href="#main-content"
@@ -91,7 +91,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </div>
             <a href="/" className="block">
               <h1 className="font-serif font-black text-4xl sm:text-6xl tracking-tight text-ink leading-none mt-2">
-                Infórmate <span className="italic">Xatrucho</span>
+                Infórmate <span className="italic">Xatruch</span>
               </h1>
             </a>
             <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 mt-1.5 text-xs text-ink-500 font-medium">
@@ -114,7 +114,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 sm:grid-cols-3 gap-10">
             <div>
               <h2 className="font-serif font-black text-2xl text-paper">
-                Infórmate <span className="italic">Xatrucho</span>
+                Infórmate <span className="italic">Xatruch</span>
               </h2>
               <p className="text-sm leading-relaxed mt-3 max-w-xs text-[#8E8B81]">
                 Plataforma automatizada de transparencia legislativa. Periodismo neutral sobre
@@ -145,7 +145,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </div>
           <div className="border-t border-white/10">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 text-xs text-[#6E6B61] flex justify-between flex-wrap gap-2">
-              <span>© {new Date().getFullYear()} Infórmate Xatrucho · Contenido generado por IA, verificado contra fuentes oficiales.</span>
+              <span>© {new Date().getFullYear()} Infórmate Xatruch · Contenido generado por IA, verificado contra fuentes oficiales.</span>
               <span>No representa a ningún partido ni institución del Estado.</span>
             </div>
           </div>

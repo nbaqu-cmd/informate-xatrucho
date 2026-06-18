@@ -167,7 +167,7 @@ function IntroSlide({ title, lawNumber, date }: { title: string; lawNumber: stri
         >
           <span style={{ fontSize: 32 }}>📺</span>
           <span style={{ color: COLORS.text, fontSize: 32, fontWeight: 600 }}>
-            Análisis completo — Infórmate Xatrucho
+            Análisis completo — Infórmate Xatruch
           </span>
         </div>
       </div>
@@ -249,7 +249,7 @@ function OutroSlide() {
     >
       <div style={{ textAlign: "center", padding: "0 120px" }}>
         <h2 style={{ color: "white", fontSize: 80, fontWeight: 900, marginBottom: 32 }}>
-          Infórmate Xatrucho
+          Infórmate Xatruch
         </h2>
         <p style={{ color: "rgba(255,255,255,0.9)", fontSize: 40, lineHeight: 1.5, marginBottom: 48 }}>
           Transparencia legislativa para el pueblo hondureño.

@@ -227,7 +227,7 @@ function generateReportHtml(law: Record<string, unknown>): string {
   <div class="section">${(law as { constitutionalReview?: { findings?: string } }).constitutionalReview?.findings ?? ""}</div>
 
   <p style="margin-top: 60px; color: #6B7280; font-size: 0.85rem; text-align: center;">
-    Generado por Infórmate Xatrucho — transparencia legislativa para Honduras
+    Generado por Infórmate Xatruch — transparencia legislativa para Honduras
   </p>
 </body>
 </html>`;

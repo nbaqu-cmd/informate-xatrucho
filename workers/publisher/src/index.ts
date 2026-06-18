@@ -32,7 +32,7 @@ async function publishToYouTube(
       snippet: {
         title: title.slice(0, 100),
         description,
-        tags: ["Honduras", "leyes", "transparencia", "congreso", "InformateXatrucho"],
+        tags: ["Honduras", "leyes", "transparencia", "congreso", "InformateXatruch"],
         categoryId: "25", // News & Politics
         defaultLanguage: "es",
       },
@@ -144,7 +144,7 @@ const worker = new Worker(
         .slice(0, 3)
         .map((p) => `• ${p}`)
         .join("\n") +
-      `\n\n#Honduras #Leyes #Transparencia #InformateXatrucho #Congreso`;
+      `\n\n#Honduras #Leyes #Transparencia #InformateXatruch #Congreso`;
 
     // Publish TikTok (uses S3 URL for pull-from-url)
     if (tikTokVideo) {
@@ -194,7 +194,7 @@ const worker = new Worker(
       try {
         const ytVideoId = await publishToYouTube(
           youtubeVideo.url, // Note: in production, use local temp path
-          `${law.title} — Análisis Completo | Infórmate Xatrucho`,
+          `${law.title} — Análisis Completo | Infórmate Xatruch`,
           `Análisis completo del Decreto ${law.lawNumber}.\n\n${law.summary?.plainSpanish ?? ""}\n\n🇭🇳 Transparencia legislativa para Honduras.\n\n#Honduras #Congreso #Transparencia`
         );
         const ytUrl = ytVideoId ? `https://youtube.com/watch?v=${ytVideoId}` : undefined;

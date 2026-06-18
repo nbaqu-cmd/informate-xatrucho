@@ -55,7 +55,7 @@ export async function assignLawCover(lawId: string): Promise<void> {
     where: { id: lawId },
     data: {
       imageUrl,
-      imageCredit: `Portada generada por Infórmate Xatrucho · ${meta.topicLabel}`,
+      imageCredit: `Portada generada por Infórmate Xatruch · ${meta.topicLabel}`,
       imageSourceUrl: null,
     },
   });

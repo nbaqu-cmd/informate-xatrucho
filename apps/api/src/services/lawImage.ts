@@ -60,7 +60,7 @@ async function fetchCommons(query: string): Promise<Record<string, CommonsResult
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
       const res = await fetch(url, {
-        headers: { "User-Agent": "InformateXatrucho/1.0 (news transparency; contact: informate)" },
+        headers: { "User-Agent": "InformateXatruch/1.0 (news transparency; contact: informate)" },
       });
       const body = await res.text();
       if (res.ok && body.startsWith("{")) {
@@ -210,7 +210,7 @@ export async function sourceLawImageBuffers(
   for (const img of sourced) {
     try {
       const res = await fetch(img.downloadUrl, {
-        headers: { "User-Agent": "InformateXatrucho/1.0 (news transparency)" },
+        headers: { "User-Agent": "InformateXatruch/1.0 (news transparency)" },
       });
       if (!res.ok) continue;
       const buffer = Buffer.from(await res.arrayBuffer());
@@ -256,7 +256,7 @@ export async function assignLawImage(lawId: string): Promise<void> {
   }
 
   const imageRes = await fetch(best.downloadUrl, {
-    headers: { "User-Agent": "InformateXatrucho/1.0 (news transparency)" },
+    headers: { "User-Agent": "InformateXatruch/1.0 (news transparency)" },
   });
   if (!imageRes.ok) {
     console.log(`[law-image] Download failed for Decreto ${law.lawNumber}`);

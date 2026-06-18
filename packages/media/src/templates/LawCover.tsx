@@ -82,7 +82,7 @@ export const LawCover: React.FC<LawCoverProps> = ({
             <span style={{ width: 13, height: 13, background: COLORS.blue }} />
           </div>
           <span style={{ fontSize: 30, fontWeight: 700, color: COLORS.ink, letterSpacing: 0.5 }}>
-            Infórmate <span style={{ fontStyle: "italic" }}>Xatrucho</span>
+            Infórmate <span style={{ fontStyle: "italic" }}>Xatruch</span>
           </span>
           <span style={{ marginLeft: 14, fontSize: 19, color: COLORS.ink500, fontFamily: "Arial, sans-serif", letterSpacing: 3, textTransform: "uppercase" }}>
             Transparencia legislativa

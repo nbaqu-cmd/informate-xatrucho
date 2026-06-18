@@ -166,8 +166,8 @@ function FeaturedStory({
       </h1>
       <div className="mb-1.5">
         <PhotoPlaceholder
-          caption={`Fotografía · Decreto ${law.lawNumber}`}
-          height={320}
+          caption={`Portada · Decreto ${law.lawNumber}`}
+          aspectVideo
           src={law.imageUrl ?? CONGRESO_PHOTO.src}
         />
       </div>

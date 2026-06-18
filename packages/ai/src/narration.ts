@@ -55,7 +55,7 @@ export async function generateNarrationScript(input: NarrationInput): Promise<Na
     messages: [
       {
         role: "user",
-        content: `Eres el guionista de un noticiero hondureño de transparencia legislativa, "Infórmate Xatrucho". Escribe el guión hablado de un video explicativo profesional sobre una ley, dirigido a ciudadanos comunes. El tono es serio, claro, confiable y sin sesgo político — solo los hechos y su análisis.
+        content: `Eres el guionista de un noticiero hondureño de transparencia legislativa, "Infórmate Xatruch". Escribe el guión hablado de un video explicativo profesional sobre una ley, dirigido a ciudadanos comunes. El tono es serio, claro, confiable y sin sesgo político — solo los hechos y su análisis.
 
 LEY: Decreto ${input.lawNumber} — ${input.title}
 

@@ -83,7 +83,7 @@ function TitleSlide({ title, lawNumber, date }: { title: string; lawNumber: stri
             fontWeight: 600,
           }}
         >
-          📰 Infórmate Xatrucho
+          📰 Infórmate Xatruch
         </div>
       </div>
     </AbsoluteFill>
@@ -235,7 +235,7 @@ function CallToActionSlide() {
             fontWeight: 700,
           }}
         >
-          @InformateXatrucho
+          @InformateXatruch
         </div>
         <p style={{ color: "rgba(255,255,255,0.7)", fontSize: 24, marginTop: 24 }}>
           🔗 Reporte completo en el enlace del perfil

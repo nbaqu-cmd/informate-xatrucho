@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
     const law = await api.laws.get(params.id);
     const description = law.summary?.plainSpanish
       ? law.summary.plainSpanish.slice(0, 155)
-      : `Análisis automatizado del Decreto ${law.lawNumber} por Infórmate Xatrucho.`;
+      : `Análisis automatizado del Decreto ${law.lawNumber} por Infórmate Xatruch.`;
     return {
       title: law.title,
       description,
@@ -39,10 +39,10 @@ const PLATFORM_ICONS: Record<string, string> = {
 };
 
 const ANALYSIS_SECTIONS = [
-  { key: "causes" as const, title: "Causas", color: "border-honduras-blue", text: "text-honduras-blue" },
-  { key: "effects" as const, title: "Efectos", color: "border-accent-amber", text: "text-accent-amber" },
-  { key: "benefits" as const, title: "Beneficios", color: "border-accent-green", text: "text-accent-green" },
-  { key: "drawbacks" as const, title: "Riesgos", color: "border-honduras-red", text: "text-honduras-red" },
+  { key: "causes" as const, anchor: "causas", title: "Causas", color: "border-honduras-blue", text: "text-honduras-blue" },
+  { key: "effects" as const, anchor: "efectos", title: "Efectos", color: "border-accent-amber", text: "text-accent-amber" },
+  { key: "benefits" as const, anchor: "beneficios", title: "Beneficios", color: "border-accent-green", text: "text-accent-green" },
+  { key: "drawbacks" as const, anchor: "riesgos", title: "Riesgos", color: "border-honduras-red", text: "text-honduras-red" },
 ];
 
 export default async function LawDetailPage({ params }: { params: { id: string } }) {
@@ -98,6 +98,27 @@ export default async function LawDetailPage({ params }: { params: { id: string }
   );
   const sourceCount = law.analysis?.sources.length ?? 0;
 
+  const constitutionalAlert = law.constitutionalReview && !law.constitutionalReview.isCompliant;
+
+  // Quick-jump dashboard: only the sections this law actually has.
+  const navItems = [
+    law.analysis && { id: "causas", label: "Causas", desc: "Por qué se creó", bar: "bg-honduras-blue", text: "text-honduras-blue" },
+    law.analysis && { id: "efectos", label: "Efectos", desc: "Qué cambia", bar: "bg-accent-amber", text: "text-accent-amber" },
+    law.analysis && { id: "beneficios", label: "Beneficios", desc: "Lo positivo", bar: "bg-accent-green", text: "text-accent-green" },
+    law.analysis && { id: "riesgos", label: "Riesgos", desc: "Lo negativo", bar: "bg-honduras-red", text: "text-honduras-red" },
+    sourceCount > 0 && { id: "fuentes", label: "Fuentes", desc: `${sourceCount} consultada${sourceCount !== 1 ? "s" : ""}`, bar: "bg-ink-300", text: "text-ink-500" },
+    law.impactAnalysis && { id: "impacto", label: "Impacto social", desc: "Por clase social", bar: "bg-accent-purple", text: "text-accent-purple" },
+    law.constitutionalReview && {
+      id: "veredicto-constitucional",
+      label: "Constitucionalidad",
+      desc: constitutionalAlert ? "⚠ Posible alerta" : "Revisado",
+      bar: constitutionalAlert ? "bg-honduras-red" : "bg-accent-green",
+      text: constitutionalAlert ? "text-honduras-red" : "text-accent-green",
+    },
+    voteRows.length > 0 && { id: "votacion", label: "Votación", desc: "Cómo votaron", bar: "bg-ink", text: "text-ink" },
+    (law.transcripts?.length ?? 0) > 0 && { id: "transcripciones", label: "Transcripciones", desc: "Sesiones y entrevistas", bar: "bg-ink-300", text: "text-ink-500" },
+  ].filter(Boolean) as Array<{ id: string; label: string; desc: string; bar: string; text: string }>;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "NewsArticle",
@@ -105,8 +126,8 @@ export default async function LawDetailPage({ params }: { params: { id: string }
     datePublished: law.gazetteDate,
     description: law.summary?.plainSpanish,
     url: `${SITE_URL}/leyes/${law.id}`,
-    publisher: { "@type": "Organization", name: "Infórmate Xatrucho" },
-    author: { "@type": "Organization", name: "Infórmate Xatrucho" },
+    publisher: { "@type": "Organization", name: "Infórmate Xatruch" },
+    author: { "@type": "Organization", name: "Infórmate Xatruch" },
   };
 
   return (
@@ -160,7 +181,7 @@ export default async function LawDetailPage({ params }: { params: { id: string }
             <span className="w-6 h-6 rounded-full bg-ink text-white flex items-center justify-center text-[10px] font-bold">
               IA
             </span>
-            Redacción automatizada Xatrucho
+            Redacción automatizada Xatruch
           </span>
           <span className="text-border">·</span>
           <span>Decreto {law.lawNumber}</span>
@@ -222,7 +243,7 @@ export default async function LawDetailPage({ params }: { params: { id: string }
             <div className="mb-2">
               <PhotoPlaceholder
                 caption={`Portada · Decreto ${law.lawNumber}`}
-                height={360}
+                aspectVideo
                 src={law.imageUrl ?? CONGRESO_PHOTO.src}
               />
             </div>
@@ -233,6 +254,31 @@ export default async function LawDetailPage({ params }: { params: { id: string }
               El análisis completo del texto se encuentra a continuación.
             </p>
           </>
+        )}
+
+        {/* Quick-jump dashboard */}
+        {navItems.length > 0 && (
+          <nav aria-label="Secciones del análisis" className="mb-9">
+            <div className="text-xs font-bold uppercase tracking-widest text-ink-500 mb-3">
+              En este análisis · salta a una sección
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+              {navItems.map((item) => (
+                <a
+                  key={item.id}
+                  href={`#${item.id}`}
+                  className="group relative flex flex-col justify-between bg-white border border-border hover:border-ink/40 hover:shadow-sm transition-all pl-4 pr-3 py-3 min-h-[74px]"
+                >
+                  <span className={`absolute left-0 top-0 bottom-0 w-1 ${item.bar}`} />
+                  <span className={`text-sm font-bold ${item.text}`}>{item.label}</span>
+                  <span className="text-[12px] text-ink-500 flex items-center justify-between gap-1">
+                    {item.desc}
+                    <span className="text-ink-300 group-hover:text-ink group-hover:translate-x-0.5 transition-all">↓</span>
+                  </span>
+                </a>
+              ))}
+            </div>
+          </nav>
         )}
 
         {(law.socialPosts?.length ?? 0) > 0 && (
@@ -290,8 +336,8 @@ export default async function LawDetailPage({ params }: { params: { id: string }
             Desglose generado por IA del texto íntegro del decreto, organizado en cuatro dimensiones.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            {ANALYSIS_SECTIONS.map(({ key, title, color, text }) => (
-              <div key={key} className={`bg-white border border-border border-l-4 ${color} p-6`}>
+            {ANALYSIS_SECTIONS.map(({ key, anchor, title, color, text }) => (
+              <div key={key} id={anchor} className={`bg-white border border-border border-l-4 ${color} p-6 scroll-mt-24`}>
                 <div className={`text-[11px] font-bold uppercase tracking-widest ${text} mb-2.5`}>
                   {title}
                 </div>
@@ -302,7 +348,7 @@ export default async function LawDetailPage({ params }: { params: { id: string }
             ))}
           </div>
           {law.analysis.sources.length > 0 && (
-            <div className="mt-8 pt-6 border-t border-border">
+            <div id="fuentes" className="mt-8 pt-6 border-t border-border scroll-mt-24">
               <p className="text-xs font-bold uppercase tracking-widest text-ink-500 mb-3">Fuentes consultadas</p>
               <ul className="space-y-2">
                 {law.analysis.sources.map((src, i) => (
@@ -325,7 +371,7 @@ export default async function LawDetailPage({ params }: { params: { id: string }
 
       {/* Impact by class */}
       {law.impactAnalysis && (
-        <section className="max-w-[880px] mx-auto px-4 sm:px-6 lg:px-8 pt-9 pb-3">
+        <section id="impacto" className="max-w-[880px] mx-auto px-4 sm:px-6 lg:px-8 pt-9 pb-3 scroll-mt-24">
           <h2 className="font-serif font-black text-2xl mb-5">Impacto por clase social</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {[
@@ -344,7 +390,7 @@ export default async function LawDetailPage({ params }: { params: { id: string }
 
       {/* Constitutional verdict — dark card */}
       {law.constitutionalReview && (
-        <section id="veredicto-constitucional" className="max-w-[880px] mx-auto px-4 sm:px-6 lg:px-8 pt-9 pb-3 scroll-mt-8">
+        <section id="veredicto-constitucional" className="max-w-[880px] mx-auto px-4 sm:px-6 lg:px-8 pt-9 pb-3 scroll-mt-24">
           <div className="bg-ink text-paper p-8">
             <div className="flex items-center justify-between gap-4 flex-wrap border-b border-white/10 pb-4 mb-4">
               <div>
@@ -379,7 +425,7 @@ export default async function LawDetailPage({ params }: { params: { id: string }
 
       {/* Voting record */}
       {voteRows.length > 0 && (
-        <section className="max-w-[880px] mx-auto px-4 sm:px-6 lg:px-8 pt-9 pb-16">
+        <section id="votacion" className="max-w-[880px] mx-auto px-4 sm:px-6 lg:px-8 pt-9 pb-16 scroll-mt-24">
           <div className="flex items-baseline justify-between flex-wrap gap-2 mb-4">
             <h2 className="font-serif font-black text-2xl">Registro de votación</h2>
             <span className="text-[13px] text-ink-500">
@@ -392,7 +438,7 @@ export default async function LawDetailPage({ params }: { params: { id: string }
 
       {/* Transcripts */}
       {(law.transcripts?.length ?? 0) > 0 && (
-        <section className="max-w-[880px] mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <section id="transcripciones" className="max-w-[880px] mx-auto px-4 sm:px-6 lg:px-8 pb-16 scroll-mt-24">
           <h2 className="font-serif font-black text-2xl mb-5">Transcripciones</h2>
           <div className="space-y-3">
             {law.transcripts?.map((t, i) => (
