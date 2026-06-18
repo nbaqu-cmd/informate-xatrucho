@@ -256,9 +256,9 @@ export default async function LawDetailPage({ params }: { params: { id: string }
           </>
         )}
 
-        {/* Quick-jump dashboard */}
+        {/* Quick-jump dashboard — horizontal, only on mobile (the desktop one lives sticky in the sidebar) */}
         {navItems.length > 0 && (
-          <nav aria-label="Secciones del análisis" className="mb-9">
+          <nav aria-label="Secciones del análisis" className="mb-9 lg:hidden">
             <div className="text-xs font-bold uppercase tracking-widest text-ink-500 mb-3">
               En este análisis · salta a una sección
             </div>
@@ -498,7 +498,30 @@ export default async function LawDetailPage({ params }: { params: { id: string }
       )}
       </div>
 
-      <aside className="hidden lg:block lg:sticky lg:top-8 pt-11 pb-16 pr-4 sm:pr-6 lg:pr-8 space-y-8">
+      <aside className="hidden lg:block lg:sticky lg:top-8 pt-11 pb-16 pr-4 sm:pr-6 lg:pr-8 space-y-6">
+        {/* Sticky vertical jump nav — follows the reader down the page */}
+        {navItems.length > 0 && (
+          <nav aria-label="Secciones del análisis" className="border border-border bg-white">
+            <div className="text-[11px] font-bold uppercase tracking-widest text-ink-500 px-4 py-3 border-b border-border">
+              En este análisis
+            </div>
+            {navItems.map((item) => (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                className="group flex items-center gap-3 px-4 py-2.5 border-b border-border last:border-0 hover:bg-paper-200 transition-colors"
+              >
+                <span className={`w-1 self-stretch ${item.bar} shrink-0`} />
+                <span className="min-w-0 flex-1">
+                  <span className={`block text-[13px] font-bold leading-tight ${item.text}`}>{item.label}</span>
+                  <span className="block text-[11px] text-ink-500 truncate">{item.desc}</span>
+                </span>
+                <span className="text-ink-300 group-hover:text-ink group-hover:translate-x-0.5 transition-all shrink-0">→</span>
+              </a>
+            ))}
+          </nav>
+        )}
+
         <div className="border border-border">
           <h3 className="font-serif font-black text-base border-b border-border px-5 py-3">
             Ficha rápida
