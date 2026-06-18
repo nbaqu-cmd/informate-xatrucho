@@ -119,7 +119,7 @@ export const LawCover: React.FC<LawCoverProps> = ({
           <div style={{ display: "flex", alignItems: "center", gap: 16, background: COLORS.red, padding: "16px 24px", alignSelf: "flex-start", marginBottom: 22 }}>
             <span style={{ fontSize: 30 }}>⚠</span>
             <span style={{ color: "#fff", fontFamily: "Arial, sans-serif", fontSize: 24, fontWeight: 800, letterSpacing: 1.5, textTransform: "uppercase" }}>
-              Posible inconstitucionalidad
+              Posible tensión constitucional
             </span>
           </div>
         ) : (

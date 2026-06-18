@@ -117,8 +117,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 Infórmate <span className="italic">Xatruch</span>
               </h2>
               <p className="text-sm leading-relaxed mt-3 max-w-xs text-[#8E8B81]">
-                Plataforma automatizada de transparencia legislativa. Periodismo neutral sobre
-                cada ley que pasa por el Congreso de Honduras.
+                Plataforma automatizada de transparencia legislativa. Explicamos, sin sesgo, cada
+                decreto que publica el Congreso de Honduras a partir de su texto oficial.
               </p>
             </div>
             <div>
@@ -138,14 +138,17 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 Metodología
               </div>
               <p className="text-sm leading-relaxed text-[#8E8B81]">
-                Cada artículo se genera por inteligencia artificial y se contrasta contra el
-                texto oficial del decreto y la Constitución de la República antes de publicarse.
+                Cada análisis se genera por inteligencia artificial a partir del texto oficial del
+                decreto. Es útil pero falible y no sustituye asesoría legal.
               </p>
+              <a href="/metodologia" className="inline-block mt-3 text-sm font-bold text-white hover:underline">
+                Cómo trabajamos y qué verificamos →
+              </a>
             </div>
           </div>
           <div className="border-t border-white/10">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 text-xs text-[#6E6B61] flex justify-between flex-wrap gap-2">
-              <span>© {new Date().getFullYear()} Infórmate Xatruch · Contenido generado por IA, verificado contra fuentes oficiales.</span>
+              <span>© {new Date().getFullYear()} Infórmate Xatruch · Contenido generado por IA a partir del texto oficial de La Gaceta.</span>
               <span>No representa a ningún partido ni institución del Estado.</span>
             </div>
           </div>

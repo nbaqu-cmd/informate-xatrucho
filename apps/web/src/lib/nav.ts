@@ -4,4 +4,5 @@ export const NAV_LINKS = [
   { href: "/congresistas", label: "Congresistas" },
   { href: "/partidos", label: "Partidos" },
   { href: "/alertas", label: "Alertas" },
+  { href: "/metodologia", label: "Metodología" },
 ];

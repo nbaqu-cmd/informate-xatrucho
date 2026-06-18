@@ -106,12 +106,12 @@ export default async function LawDetailPage({ params }: { params: { id: string }
     law.analysis && { id: "efectos", label: "Efectos", desc: "Qué cambia", bar: "bg-accent-amber", text: "text-accent-amber" },
     law.analysis && { id: "beneficios", label: "Beneficios", desc: "Lo positivo", bar: "bg-accent-green", text: "text-accent-green" },
     law.analysis && { id: "riesgos", label: "Riesgos", desc: "Lo negativo", bar: "bg-honduras-red", text: "text-honduras-red" },
-    sourceCount > 0 && { id: "fuentes", label: "Fuentes", desc: `${sourceCount} consultada${sourceCount !== 1 ? "s" : ""}`, bar: "bg-ink-300", text: "text-ink-500" },
+    sourceCount > 0 && { id: "fuentes", label: "Fuentes", desc: `${sourceCount} verificada${sourceCount !== 1 ? "s" : ""}`, bar: "bg-ink-300", text: "text-ink-500" },
     law.impactAnalysis && { id: "impacto", label: "Impacto social", desc: "Por clase social", bar: "bg-accent-purple", text: "text-accent-purple" },
     law.constitutionalReview && {
       id: "veredicto-constitucional",
       label: "Constitucionalidad",
-      desc: constitutionalAlert ? "⚠ Posible alerta" : "Revisado",
+      desc: constitutionalAlert ? "⚠ A revisar" : "Sin tensiones",
       bar: constitutionalAlert ? "bg-honduras-red" : "bg-accent-green",
       text: constitutionalAlert ? "text-honduras-red" : "text-accent-green",
     },
@@ -143,13 +143,13 @@ export default async function LawDetailPage({ params }: { params: { id: string }
             <span className="text-3xl leading-none shrink-0" aria-hidden="true">⚠️</span>
             <div>
               <div className="font-bold uppercase tracking-widest text-[12px] mb-1">
-                Alerta · Posible inconstitucionalidad
+                Revisión constitucional · Posibles tensiones a revisar
               </div>
               <p className="font-article text-[15px] leading-snug text-white/95 line-clamp-2">
                 {law.constitutionalReview.findings}
               </p>
               <span className="inline-block mt-1.5 text-[12px] font-bold underline underline-offset-2">
-                Ver veredicto completo ↓
+                Ver la revisión completa ↓
               </span>
             </div>
           </div>
@@ -192,9 +192,9 @@ export default async function LawDetailPage({ params }: { params: { id: string }
           {sourceCount > 0 && (
             <>
               <span className="text-border">·</span>
-              <span className="text-honduras-blue font-bold">
-                Verificado con {sourceCount} fuente{sourceCount !== 1 ? "s" : ""}
-              </span>
+              <a href="#fuentes" className="text-honduras-blue font-bold hover:underline">
+                {sourceCount} fuente{sourceCount !== 1 ? "s" : ""} verificada{sourceCount !== 1 ? "s" : ""}
+              </a>
             </>
           )}
           {law.report?.pdfUrl && (
@@ -333,7 +333,11 @@ export default async function LawDetailPage({ params }: { params: { id: string }
         <section className="max-w-[880px] mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-3">
           <h2 className="font-serif font-black text-2xl mb-1.5">Análisis automatizado</h2>
           <p className="text-[13px] text-ink-500 mb-6">
-            Desglose generado por IA del texto íntegro del decreto, organizado en cuatro dimensiones.
+            Desglose generado por inteligencia artificial a partir del texto íntegro del decreto.
+            Es una interpretación útil pero falible.{" "}
+            <a href="/metodologia" className="text-honduras-blue font-semibold hover:underline">
+              Cómo lo hacemos →
+            </a>
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {ANALYSIS_SECTIONS.map(({ key, anchor, title, color, text }) => (
@@ -349,7 +353,11 @@ export default async function LawDetailPage({ params }: { params: { id: string }
           </div>
           {law.analysis.sources.length > 0 && (
             <div id="fuentes" className="mt-8 pt-6 border-t border-border scroll-mt-24">
-              <p className="text-xs font-bold uppercase tracking-widest text-ink-500 mb-3">Fuentes consultadas</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-ink-500 mb-1">Fuentes verificadas</p>
+              <p className="text-[12px] text-ink-500 mb-3">
+                La primera es el texto oficial del decreto en La Gaceta. Solo listamos enlaces que
+                comprobamos que existen y responden.
+              </p>
               <ul className="space-y-2">
                 {law.analysis.sources.map((src, i) => (
                   <li key={i} className="text-sm text-ink-500">
@@ -395,16 +403,27 @@ export default async function LawDetailPage({ params }: { params: { id: string }
             <div className="flex items-center justify-between gap-4 flex-wrap border-b border-white/10 pb-4 mb-4">
               <div>
                 <div className="text-[11px] font-bold uppercase tracking-widest text-[#8A8678]">
-                  Veredicto constitucional
+                  Revisión constitucional preliminar
                 </div>
                 <div className="font-serif font-black text-2xl mt-1">
-                  {law.constitutionalReview.isCompliant ? "Constitucional" : "Posible inconstitucionalidad"}
+                  {law.constitutionalReview.isCompliant
+                    ? "Sin tensiones aparentes"
+                    : "Posibles tensiones a revisar"}
                 </div>
               </div>
               <span className="text-3xl" aria-hidden="true">{law.constitutionalReview.isCompliant ? "✅" : "⚠️"}</span>
             </div>
             <p className="font-article text-base leading-relaxed text-[#D8D5CB] mb-5">
               {law.constitutionalReview.findings}
+            </p>
+            <p className="text-xs leading-relaxed text-[#8A8678] border-t border-white/10 pt-4 mb-5">
+              Análisis preliminar automatizado, comparado con una selección de artículos de la
+              Constitución. <strong className="text-[#BDBAB0]">No es un dictamen legal.</strong> En
+              Honduras, solo la Corte Suprema de Justicia puede declarar inconstitucional una ley
+              (Arts. 184-185).{" "}
+              <a href="/metodologia" className="text-white font-semibold hover:underline">
+                Cómo interpretamos esto →
+              </a>
             </p>
             {law.constitutionalReview.articles.length > 0 && (
               <div className="flex gap-2 flex-wrap">

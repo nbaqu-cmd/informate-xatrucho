@@ -90,6 +90,20 @@ export interface Congressman {
   _count: { votes: number; appearances: number };
 }
 
+export interface CongressmanDetail {
+  id: string;
+  name: string;
+  photoUrl?: string;
+  district?: string;
+  party: { id: string; name: string; abbreviation: string; color?: string };
+  votes: Array<{
+    vote: string;
+    createdAt: string;
+    law: { id: string; title: string; gazetteDate: string };
+  }>;
+  appearances: Array<{ law: { id: string; title: string }; videoUrl: string; timestamp: number }>;
+}
+
 export interface Party {
   id: string;
   name: string;
@@ -123,7 +137,7 @@ export const api = {
   },
   congressmen: {
     list: () => apiFetch<Congressman[]>("/congressmen"),
-    get: (id: string) => apiFetch<Congressman>(`/congressmen/${id}`),
+    get: (id: string) => apiFetch<CongressmanDetail>(`/congressmen/${id}`),
   },
   parties: {
     list: () => apiFetch<Party[]>("/parties"),

@@ -51,9 +51,9 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto py-10 grid grid-cols-2 sm:grid-cols-4 gap-6">
           {[
             { value: totalLaws, label: "Leyes analizadas", border: "border-honduras-red" },
-            { value: totalCongressmen, label: "Congresistas monitoreados", border: "border-honduras-blue" },
+            { value: totalCongressmen, label: "Diputados en el directorio", border: "border-honduras-blue" },
             { value: totalAlerts, label: "Alertas emitidas", border: "border-honduras-red" },
-            { value: totalParties, label: "Partidos rastreados", border: "border-honduras-blue" },
+            { value: totalParties, label: "Bancadas", border: "border-honduras-blue" },
           ].map(({ value, label, border }) => (
             <div key={label} className={`border-l-[3px] ${border} pl-4`}>
               <div className="font-serif font-black text-4xl sm:text-5xl leading-none">
@@ -117,10 +117,10 @@ export default async function HomePage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { num: "01", title: "Detección", desc: "Monitoreamos el Diario La Gaceta y el Congreso Nacional cada hora buscando nuevas leyes." },
-              { num: "02", title: "Análisis IA", desc: "Claude AI analiza causas, efectos, impacto por clase social y constitucionalidad." },
-              { num: "03", title: "Verificación", desc: "Cada afirmación se contrasta con el texto oficial del decreto y la Constitución vigente." },
-              { num: "04", title: "Publicación", desc: "Generamos videos, publicamos en redes y compilamos un reporte completo y trazable." },
+              { num: "01", title: "Detección", desc: "Revisamos La Gaceta, el Diario Oficial, y extraemos el texto íntegro de cada decreto del Congreso Nacional desde el PDF oficial." },
+              { num: "02", title: "Análisis con IA", desc: "Claude analiza causas, efectos, impacto por clase social y una revisión constitucional preliminar — sin línea editorial." },
+              { num: "03", title: "Fuentes", desc: "Enlazamos el documento oficial y comprobamos que cada fuente citada exista; descartamos los enlaces que no resuelven." },
+              { num: "04", title: "Publicación", desc: "Generamos una portada y un video explicativo narrado, y compilamos un reporte completo y trazable." },
             ].map(({ num, title, desc }) => (
               <div key={title} className="relative pt-8">
                 <span className="absolute -top-5 -left-1 font-serif font-black text-7xl text-ink/[0.06] select-none">
@@ -192,7 +192,7 @@ function FeaturedStory({
           <>
             <span className="text-border">·</span>
             <span className="text-honduras-blue font-bold">
-              Verificado con {sourceCount} fuente{sourceCount !== 1 ? "s" : ""}
+              {sourceCount} fuente{sourceCount !== 1 ? "s" : ""} verificada{sourceCount !== 1 ? "s" : ""}
             </span>
           </>
         )}

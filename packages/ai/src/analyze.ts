@@ -48,11 +48,13 @@ Responde ÚNICAMENTE con JSON válido:
   "sources": [
     {
       "title": "Nombre de la fuente o referencia",
-      "url": "URL si aplica, o null",
+      "url": "URL solo si estás SEGURO de que es una página real y estable; si tienes la menor duda, usa null. NUNCA inventes ni adivines una URL.",
       "description": "Por qué esta fuente es relevante"
     }
   ]
-}`,
+}
+
+REGLA CRÍTICA sobre las fuentes: es un medio de transparencia; una fuente inventada destruye la credibilidad. Solo incluye una URL si estás seguro de que existe (ej. la página principal de un organismo conocido). Ante cualquier duda, pon "url": null. Prefiere citar leyes y organismos por su nombre sin URL antes que adivinar un enlace.`,
       },
     ],
   });

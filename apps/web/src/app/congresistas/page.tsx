@@ -24,9 +24,10 @@ export default async function CongresistasPage() {
         Directorio
       </div>
       <h1 className="font-serif font-black text-5xl mt-2 mb-2">Congresistas</h1>
-      <p className="font-article text-ink-500 mb-10 text-lg max-w-[60ch]">
-        {congressmen.length} diputados monitoreados — cada perfil rastrea su historial de
-        votación nominal verificado.
+      <p className="font-article text-ink-500 mb-8 text-lg max-w-[64ch]">
+        Directorio de los {congressmen.length} diputados del Congreso Nacional, con su partido y
+        departamento. Nota: el voto nominal por decreto no se publica oficialmente en Honduras, por
+        lo que aún no mostramos un historial de votación individual.
       </p>
 
       {apiError ? (

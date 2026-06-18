@@ -24,8 +24,14 @@ export default async function PartidosPage() {
         Bancadas
       </div>
       <h1 className="font-serif font-black text-5xl mt-2 mb-2">Partidos en el Congreso</h1>
-      <p className="font-article text-ink-500 mb-10 text-lg max-w-[60ch]">
-        Distribución de curules y comportamiento de voto agregado por bancada.
+      <p className="font-article text-ink-500 mb-4 text-lg max-w-[64ch]">
+        Distribución de curules por bancada en el Congreso Nacional, según la integración oficial
+        del pleno.
+      </p>
+      <p className="font-article text-ink-500 mb-10 text-sm max-w-[64ch] border-l-2 border-border pl-3">
+        El comportamiento de voto por bancada requiere el voto nominal por decreto, que no se
+        publica oficialmente en Honduras; por eso esta página por ahora solo refleja la composición
+        del Congreso, no patrones de votación.
       </p>
 
       {apiError ? (
@@ -45,7 +51,7 @@ export default async function PartidosPage() {
                 className="bg-white border border-border p-6"
                 style={{ borderLeftWidth: 5, borderLeftColor: color }}
               >
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-5 items-center">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-5 items-center">
                   <div className="col-span-2 sm:col-span-1">
                     <div className="font-serif font-bold text-xl text-ink">{party.name}</div>
                     <div
@@ -56,7 +62,6 @@ export default async function PartidosPage() {
                     </div>
                   </div>
                   <Stat value={party._count.congressmen} label="Curules" />
-                  <Stat value={party._count.votes} label="Votos registrados" color="#0073CF" />
                   <Stat value={`${pct}%`} label="Peso en el pleno" color={color} />
                 </div>
                 <div className="mt-5">

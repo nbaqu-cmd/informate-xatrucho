@@ -8,6 +8,7 @@ import {
 import { queues } from "../queues/index.js";
 import { assignLawCover } from "./lawCover.js";
 import { generateExplainer } from "./explainer.js";
+import { verifyAndEnrichSources } from "./sources.js";
 
 export interface PipelineJobData {
   lawId: string;
@@ -45,6 +46,13 @@ export async function runDeepAnalyze(lawId: string): Promise<void> {
 
   const result = await analyzeLaw(law.fullText, law.title);
 
+  // Only keep sources a reader can actually verify (the official Gazette plus
+  // any AI-cited URL that truly resolves); drop hallucinated/dead links.
+  const sources = await verifyAndEnrichSources(result.sources, {
+    url: law.sourceUrl,
+    gazetteNumber: law.gazetteNumber,
+  });
+
   await db.lawAnalysis.upsert({
     where: { lawId },
     create: {
@@ -53,14 +61,14 @@ export async function runDeepAnalyze(lawId: string): Promise<void> {
       effects: result.effects,
       benefits: result.benefits,
       drawbacks: result.drawbacks,
-      sources: result.sources,
+      sources,
     },
     update: {
       causes: result.causes,
       effects: result.effects,
       benefits: result.benefits,
       drawbacks: result.drawbacks,
-      sources: result.sources,
+      sources,
     },
   });
 }

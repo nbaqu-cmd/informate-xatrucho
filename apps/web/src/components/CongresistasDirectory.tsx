@@ -118,10 +118,6 @@ export function CongresistasDirectory({ congressmen }: { congressmen: Congressma
                     {c.party.name}
                   </div>
                   <div className="text-[11px] text-ink-500 mt-0.5">{c.district}</div>
-                  <div className="flex gap-3 mt-2.5 pt-2.5 border-t border-border text-[11px] text-ink-500">
-                    <span>{c._count.votes} votos</span>
-                    <span>{c._count.appearances} apariciones</span>
-                  </div>
                 </div>
               </a>
             );
