@@ -156,7 +156,7 @@ export default async function LawDetailPage({ params }: { params: { id: string }
         </a>
       )}
 
-      <div className="max-w-[1180px] mx-auto lg:grid lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-8 lg:items-start">
+      <div className="max-w-[1180px] mx-auto lg:grid lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-8">
       <div className="min-w-0 lg:order-2">
       <div className="max-w-[760px] mx-auto px-4 sm:px-6 lg:px-8 pt-11 pb-2">
         {/* Breadcrumb */}
@@ -496,10 +496,33 @@ export default async function LawDetailPage({ params }: { params: { id: string }
           </div>
         </section>
       )}
+
+      {relatedLaws.length > 0 && (
+        <section className="max-w-[880px] mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+          <h2 className="font-serif font-black text-2xl mb-5">Más decretos recientes</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8">
+            {relatedLaws.map((rl) => (
+              <a key={rl.id} href={`/leyes/${rl.id}`} className="group block py-4 border-b border-border">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <StatusBadge status={rl.status} size="sm" />
+                  <span className="text-[11px] text-ink-500">{formatDate(rl.gazetteDate)}</span>
+                </div>
+                <h3 className="font-serif font-bold text-[15px] leading-snug group-hover:text-honduras-red transition-colors text-balance">
+                  {rl.title}
+                </h3>
+                <div className="text-xs text-ink-500 font-medium mt-1.5">Decreto {rl.lawNumber}</div>
+              </a>
+            ))}
+          </div>
+          <a href="/leyes" className="inline-block pt-4 text-honduras-red font-bold text-xs uppercase tracking-wide hover:underline">
+            Ver archivo completo →
+          </a>
+        </section>
+      )}
       </div>
 
-      <aside className="hidden lg:block lg:order-1 pt-11 pb-16 pl-4 sm:pl-6 lg:pl-8 space-y-6">
-        {/* Left rail: the jump nav stays pinned in view as the reader scrolls */}
+      <aside className="hidden lg:block lg:order-1 pt-11 pb-16 pl-4 sm:pl-6 lg:pl-8">
+        {/* Left rail: only the jump nav, pinned in view as the reader scrolls */}
         {navItems.length > 0 && (
           <nav aria-label="Secciones del análisis" className="border border-border bg-white lg:sticky lg:top-8">
             <div className="text-[11px] font-bold uppercase tracking-widest text-ink-500 px-4 py-3 border-b border-border">
@@ -520,94 +543,6 @@ export default async function LawDetailPage({ params }: { params: { id: string }
               </a>
             ))}
           </nav>
-        )}
-
-        <div className="border border-border">
-          <h3 className="font-serif font-black text-base border-b border-border px-5 py-3">
-            Ficha rápida
-          </h3>
-          <dl className="px-5 py-4 space-y-3 text-sm">
-            <div className="flex items-center justify-between gap-3">
-              <dt className="text-ink-500">Estado</dt>
-              <dd><StatusBadge status={law.status} size="sm" /></dd>
-            </div>
-            <div className="flex items-center justify-between gap-3">
-              <dt className="text-ink-500">Decreto</dt>
-              <dd className="font-semibold text-ink">{law.lawNumber}</dd>
-            </div>
-            <div className="flex items-center justify-between gap-3">
-              <dt className="text-ink-500">Publicado</dt>
-              <dd className="font-semibold text-ink">{formatDate(law.gazetteDate)}</dd>
-            </div>
-            <div className="flex items-center justify-between gap-3">
-              <dt className="text-ink-500">Lectura</dt>
-              <dd className="font-semibold text-ink">{readingMinutes} min</dd>
-            </div>
-            {sourceCount > 0 && (
-              <div className="flex items-center justify-between gap-3">
-                <dt className="text-ink-500">Fuentes</dt>
-                <dd className="font-semibold text-honduras-blue">{sourceCount}</dd>
-              </div>
-            )}
-            {law.constitutionalReview && (
-              <div className="flex items-center justify-between gap-3">
-                <dt className="text-ink-500">Constitucionalidad</dt>
-                <dd className={`font-semibold ${law.constitutionalReview.isCompliant ? "text-accent-green" : "text-accent-amber"}`}>
-                  {law.constitutionalReview.isCompliant ? "Conforme" : "En duda"}
-                </dd>
-              </div>
-            )}
-            {voteRows.length > 0 && (
-              <div className="pt-3 border-t border-border">
-                <dt className="text-ink-500 mb-1.5">Votación</dt>
-                <dd className="flex items-center gap-2.5 text-xs font-semibold">
-                  <span className="text-accent-green">{voteCounts.FOR} a favor</span>
-                  <span className="text-honduras-red">{voteCounts.AGAINST} en contra</span>
-                  <span className="text-ink-500">{voteCounts.ABSTAIN} absts.</span>
-                </dd>
-              </div>
-            )}
-          </dl>
-          {law.report?.pdfUrl && (
-            <a
-              href={law.report.pdfUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block text-center border-t border-border px-5 py-3 text-xs font-bold uppercase tracking-wide text-honduras-red hover:bg-paper-200 transition-colors"
-            >
-              📄 Descargar PDF completo
-            </a>
-          )}
-        </div>
-
-        {relatedLaws.length > 0 && (
-          <div>
-            <h3 className="font-serif font-bold text-xl border-b-2 border-ink pb-2 mb-1">
-              Más decretos recientes
-            </h3>
-            {relatedLaws.map((rl) => (
-              <a
-                key={rl.id}
-                href={`/leyes/${rl.id}`}
-                className="group block py-4 border-b border-border last:border-0"
-              >
-                <div className="flex items-center gap-2 mb-1.5">
-                  <StatusBadge status={rl.status} size="sm" />
-                  <span className="text-[11px] text-ink-500">{formatDate(rl.gazetteDate)}</span>
-                </div>
-                <h4 className="font-serif font-bold text-[15px] leading-snug group-hover:text-honduras-red transition-colors text-balance">
-                  {rl.title}
-                </h4>
-                <div className="text-xs text-ink-500 font-medium mt-1.5">Decreto {rl.lawNumber}</div>
-              </a>
-            ))}
-            <a
-              href="/leyes"
-              className="block pt-3 text-honduras-red font-bold text-xs uppercase tracking-wide hover:underline"
-            >
-              Ver archivo completo →
-            </a>
-          </div>
         )}
       </aside>
       </div>
