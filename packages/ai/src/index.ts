@@ -13,8 +13,8 @@ export type { ConstitutionalReviewResult, ConstitutionalArticle } from "./consti
 export { detectPatterns } from "./patterns.js";
 export type { PatternAlertResult, VotingRecord } from "./patterns.js";
 
-export { generateImageSearchQueries, pickRelevantImage } from "./lawImage.js";
-export type { ImageCandidate } from "./lawImage.js";
+export { generateImageQueryPlan, rankRelevantImages } from "./lawImage.js";
+export type { ImageCandidate, ImageQueryPlan } from "./lawImage.js";
 
 export { generateNarrationScript } from "./narration.js";
 export type { NarrationScript, NarrationSection, NarrationInput } from "./narration.js";
